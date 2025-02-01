@@ -11,7 +11,7 @@ data class Incident (
     val title: String,
     val description: String,
     val type: String,
-    val dateOfOccurrence: Date,
+    val dateOfOccurrence: String,
     val location: String,
     val longitude: Float,
     val latitude: Float,

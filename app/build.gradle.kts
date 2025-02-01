@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp") version "1.9.0-1.0.12"
 }
 
 android {
@@ -52,6 +53,8 @@ android {
 dependencies {
     // Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
+    implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
     // DataStore (Might not use)
     implementation("androidx.datastore:datastore-preferences:${rootProject.extra["datastore_version"]}")
     //Navigation

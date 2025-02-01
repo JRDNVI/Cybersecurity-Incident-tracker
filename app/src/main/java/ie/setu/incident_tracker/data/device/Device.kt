@@ -21,5 +21,6 @@ data class Device (
     val ipAddress: String,
     val macAddress: String,
     val operatingSystem: String,
-    val cveNumber: String
+    val cveNumber: String,
+    val incidentID: Int
 )
