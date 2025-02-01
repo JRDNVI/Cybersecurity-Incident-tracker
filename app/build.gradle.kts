@@ -50,6 +50,12 @@ android {
 }
 
 dependencies {
+    // Room
+    implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    // DataStore (Might not use)
+    implementation("androidx.datastore:datastore-preferences:${rootProject.extra["datastore_version"]}")
+    //Navigation
+    implementation("androidx.navigation:navigation-compose:${rootProject.extra["nav_version"]}")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
