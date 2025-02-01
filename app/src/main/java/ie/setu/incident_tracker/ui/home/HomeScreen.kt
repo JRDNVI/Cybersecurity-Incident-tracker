@@ -1,8 +1,11 @@
 package ie.setu.incident_tracker.ui.home
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import ie.setu.incident_tracker.IncidentTrackerBottomBar
 import ie.setu.incident_tracker.R
 import ie.setu.incident_tracker.data.incident.Incident
 import ie.setu.incident_tracker.ui.AppViewModelProvider
@@ -31,11 +35,22 @@ fun HomeScreen(
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
 
-    Scaffold {
-        HomeBody(
-            incidentList = homeUiState.incidentList,
-            modifier = Modifier.fillMaxSize()
-        )
+    Scaffold(
+        bottomBar = {
+            IncidentTrackerBottomBar(navigateToHome = {  } )
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            HomeBody(
+                incidentList = homeUiState.incidentList,
+                modifier = Modifier.fillMaxSize()
+            )
+
+        }
     }
 }
 
