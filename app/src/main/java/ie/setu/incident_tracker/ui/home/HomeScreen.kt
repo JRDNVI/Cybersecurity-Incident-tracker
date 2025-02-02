@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -75,6 +76,8 @@ fun HomeScreen(
                 incidentList = homeUiState.incidentList,
                 onIncidentSelected = navigateToIncidentDetails,
                 onEditIncidentSelected = navigateToEditIncident,
+                filterText = homeUiState.filterByIncidentTitle,
+                onFilterTextChange = { viewModel.updateSearchBox(it) },
                 modifier = Modifier.fillMaxSize()
             )
             Button(
@@ -94,12 +97,22 @@ fun HomeBody(
     incidentList: List<Incident>,
     onIncidentSelected: (Int) -> Unit,
     onEditIncidentSelected: (Int) -> Unit,
+    filterText: String,
+    onFilterTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
+        TextField(
+            value = filterText,
+            onValueChange = onFilterTextChange,
+            label = { Text("Search") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        )
         if(incidentList.isEmpty()) {
             Text(
                 text = "No Incidents",
@@ -108,8 +121,9 @@ fun HomeBody(
             )
         }
         else {
+            val filteredIncidents = incidentList.filter { it.title.contains(filterText, ignoreCase = true ) }
             ListIncidents(
-                incidentList = incidentList,
+                incidentList = filteredIncidents,
                 onIncidentSelected = onIncidentSelected,
                 onEditIncidentSelected = onEditIncidentSelected,
                 modifier = modifier.padding(10.dp)
