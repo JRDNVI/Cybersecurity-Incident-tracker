@@ -6,11 +6,18 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import ie.setu.incident_tracker.IncidentTrackerApplication
 import ie.setu.incident_tracker.ui.home.HomeViewModel
+import ie.setu.incident_tracker.ui.incident.AddIncidentViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
         initializer {
             HomeViewModel(
+                IncidentTrackerApplication().container.incidentRepository
+            )
+        }
+
+        initializer {
+            AddIncidentViewModel(
                 IncidentTrackerApplication().container.incidentRepository
             )
         }
