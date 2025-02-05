@@ -8,12 +8,15 @@ import ie.setu.incident_tracker.data.incident.Incident
 import ie.setu.incident_tracker.data.device.Device
 import ie.setu.incident_tracker.data.device.DeviceDao
 import ie.setu.incident_tracker.data.incident.IncidentDao
+import ie.setu.incident_tracker.data.user.User
+import ie.setu.incident_tracker.data.user.UserDao
 
-@Database(entities = [Incident::class, Device::class], version = 1)
+@Database(entities = [Incident::class, Device::class, User::class], version = 1)
 abstract class IncidentDatabase : RoomDatabase() {
 
     abstract fun incidentDao(): IncidentDao
     abstract fun deviceDao(): DeviceDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
