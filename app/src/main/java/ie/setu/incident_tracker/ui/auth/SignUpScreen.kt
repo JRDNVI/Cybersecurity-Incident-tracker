@@ -1,9 +1,7 @@
 package ie.setu.incident_tracker.ui.auth
 
 import android.annotation.SuppressLint
-import android.content.ClipData.Item
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,11 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,38 +24,37 @@ import ie.setu.incident_tracker.ui.navigation.NavigationDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-object SignInDestination : NavigationDestination {
-    override val route = "signIn"
-    override val titleRes = R.string.home_screen
+object SignUpDestination : NavigationDestination {
+    override val route = "signUp"
+    override val titleRes = R.string.SignUp_screen
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SignInScreen(
+fun SignUpScreen(
     navigateToHomeScreen: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SignInViewModel = viewModel(factory = AppViewModelProvider.factory)
+    viewModel: SignUpViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
-
-    val sigInUiState by viewModel.signInState.collectAsState()
+    val signUpState by viewModel.signUpState.collectAsState()
     val scope = rememberCoroutineScope()
 
-    Scaffold { innerPadding ->
-        SignInBody(
-            signInUiState = sigInUiState,
-            onSignInValueChange = viewModel::updateUiState,
+    Scaffold {
+        SignUpBody(
+            signUpState = signUpState,
+            onSignUpValueChange = viewModel::updateSignUpState,
             viewModel = viewModel,
             scope = scope,
-            modifier = Modifier
+            modifier = modifier
         )
     }
 }
 
 @Composable
-fun SignInBody(
-    signInUiState: SignInState,
-    onSignInValueChange: (SignInState) -> Unit,
-    viewModel: SignInViewModel,
+fun SignUpBody(
+    signUpState: SignUpState,
+    onSignUpValueChange: (SignUpState) -> Unit,
+    viewModel: SignUpViewModel,
     scope: CoroutineScope,
     modifier: Modifier = Modifier
 ) {
@@ -70,16 +66,16 @@ fun SignInBody(
     ) {
         item {
             OutlinedTextField(
-                value = signInUiState.username,
-                onValueChange = { onSignInValueChange(signInUiState.copy(username = it)) },
+                value = signUpState.username,
+                onValueChange = { onSignUpValueChange(signUpState.copy(username = it)) },
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth()
             )
         }
         item {
             OutlinedTextField(
-                value = signInUiState.password,
-                onValueChange = { onSignInValueChange(signInUiState.copy(password = it))},
+                value = signUpState.password,
+                onValueChange = { onSignUpValueChange(signUpState.copy(password = it))},
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -88,7 +84,7 @@ fun SignInBody(
             Button(
                 onClick = {
                     scope.launch {
-                        viewModel.userAuth(signInUiState.username, password = signInUiState.password)
+                        viewModel.signUp(signUpState)
                     }
                 },
 
@@ -96,16 +92,8 @@ fun SignInBody(
                     .fillMaxSize()
                     .padding(vertical = 16.dp)
             ) {
-                Text("Sign In")
+                Text("Add Incident")
             }
         }
-            item {
-                Button(
-                    onClick = {
-
-                    }
-                ) { }
-            }
-
-        }
+    }
 }

@@ -5,4 +5,6 @@
     <string name="back">Back</string>
     <string name="edit_incident_icon">Edit Incident</string>
     <string name="SignIn_screen">Sign in Screen</string>
+    <string name="SignUp_screen">Sign up Screen</string>
+
 </resources>

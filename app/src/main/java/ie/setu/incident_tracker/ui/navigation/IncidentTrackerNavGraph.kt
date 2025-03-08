@@ -5,6 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import ie.setu.incident_tracker.ui.auth.SignInDestination
+import ie.setu.incident_tracker.ui.auth.SignInScreen
+import ie.setu.incident_tracker.ui.auth.SignUpDestination
+import ie.setu.incident_tracker.ui.auth.SignUpScreen
 import ie.setu.incident_tracker.ui.home.HomeDestination
 import ie.setu.incident_tracker.ui.home.HomeScreen
 import ie.setu.incident_tracker.ui.incident.AddIncidentDestination
@@ -20,6 +24,12 @@ fun IncidentTrackerNavHost(
         startDestination = HomeDestination.route,
         modifier = modifier
     ) {
+
+        composable(route = SignInDestination.route) {
+            SignInScreen(
+                navigateToHomeScreen = { navController.navigate(HomeDestination.route) }
+            )
+        }
         composable(route = HomeDestination.route) {
             HomeScreen(
                 navigateToAddIncident = { navController.navigate(AddIncidentDestination.route) },
@@ -34,6 +44,12 @@ fun IncidentTrackerNavHost(
                 onNavigateUp = { navController.navigateUp() },
                 navigateHome = { navController.navigate(HomeDestination.route) }
             )
+        }
+        composable(route = SignUpDestination.route) {
+            SignUpScreen(
+                navigateToHomeScreen = { navController.navigate(HomeDestination.route) }
+            )
+
         }
     }
 }

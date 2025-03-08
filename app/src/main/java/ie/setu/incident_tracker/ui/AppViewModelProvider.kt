@@ -8,9 +8,11 @@ import ie.setu.incident_tracker.IncidentTrackerApplication
 import ie.setu.incident_tracker.ui.auth.SignInViewModel
 import ie.setu.incident_tracker.ui.home.HomeViewModel
 import ie.setu.incident_tracker.ui.incident.AddIncidentViewModel
+import ie.setu.incident_tracker.ui.auth.SignUpViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
+
         initializer {
             HomeViewModel(
                 IncidentTrackerApplication().container.incidentRepository
@@ -22,8 +24,15 @@ object AppViewModelProvider {
                 IncidentTrackerApplication().container.incidentRepository
             )
         }
+
         initializer {
             SignInViewModel(
+                IncidentTrackerApplication().container.userRepository
+            )
+        }
+
+        initializer {
+            SignUpViewModel(
                 IncidentTrackerApplication().container.userRepository
             )
         }

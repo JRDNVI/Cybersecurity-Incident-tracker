@@ -13,11 +13,11 @@ interface UserRepository {
         fun getUserByName(username: String):Flow<User?>
 
 
-        suspend fun insertItem(guest: User)
+        suspend fun insertItem(user: User)
 
 
-        suspend fun deleteItem(guest: User)
+        suspend fun deleteItem(user: User)
 
 
-        suspend fun updateItem(guest: User)
+        suspend fun updateItem(user: User)
 }

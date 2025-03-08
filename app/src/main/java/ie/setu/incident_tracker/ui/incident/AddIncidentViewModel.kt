@@ -28,8 +28,6 @@ class AddIncidentViewModel(private val incidentRepository: IncidentRepository) :
     }
 }
 
-
-
 data class IncidentUiState(
     val incidentDetails: IncidentDetails = IncidentDetails(),
     val isEntryValid: Boolean = false
