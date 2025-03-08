@@ -2,7 +2,9 @@ package ie.setu.incident_tracker.ui.auth
 
 import android.annotation.SuppressLint
 import android.content.ClipData.Item
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +38,7 @@ object SignInDestination : NavigationDestination {
 @Composable
 fun SignInScreen(
     navigateToHomeScreen: () -> Unit,
+    navigateToSignUpScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SignInViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -44,13 +47,21 @@ fun SignInScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold { innerPadding ->
-        SignInBody(
-            signInUiState = sigInUiState,
-            onSignInValueChange = viewModel::updateUiState,
-            viewModel = viewModel,
-            scope = scope,
+        Box(
             modifier = Modifier
-        )
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            SignInBody(
+                signInUiState = sigInUiState,
+                onSignInValueChange = viewModel::updateUiState,
+                viewModel = viewModel,
+                scope = scope,
+                navigateToHomeScreen = navigateToHomeScreen,
+                navigateToSignUpScreen = navigateToSignUpScreen,
+                modifier = Modifier
+            )
+        }
     }
 }
 
@@ -60,6 +71,8 @@ fun SignInBody(
     onSignInValueChange: (SignInState) -> Unit,
     viewModel: SignInViewModel,
     scope: CoroutineScope,
+    navigateToHomeScreen: () -> Unit,
+    navigateToSignUpScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -88,7 +101,11 @@ fun SignInBody(
             Button(
                 onClick = {
                     scope.launch {
-                        viewModel.userAuth(signInUiState.username, password = signInUiState.password)
+                        if (viewModel.userAuth(signInUiState.username, password = signInUiState.password) ) {
+                            navigateToHomeScreen()
+                        }
+                        Log.d("SignInScreen", "User authenticated: ${signInUiState.isAuth}")
+
                     }
                 },
 
@@ -101,10 +118,13 @@ fun SignInBody(
         }
             item {
                 Button(
-                    onClick = {
-
-                    }
-                ) { }
+                    onClick = navigateToSignUpScreen,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text("Sign Up")
+                }
             }
 
         }

@@ -12,8 +12,14 @@ class SignUpViewModel(private val userRepository: UserRepository) : ViewModel() 
     private val _signUpUiState = MutableStateFlow(SignUpState())
     val signUpState: StateFlow<SignUpState> = _signUpUiState.asStateFlow()
 
-    suspend fun signUp(user: SignUpState) {
-        userRepository.insertItem(user.toUser())
+    suspend fun signUp(user: SignUpState) : Boolean {
+        try {
+            userRepository.insertItem(user.toUser())
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
     }
 
     fun updateSignUpState(signUpState: SignUpState) {

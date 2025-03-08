@@ -2,6 +2,7 @@ package ie.setu.incident_tracker.ui.auth
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,14 +41,36 @@ fun SignUpScreen(
     val signUpState by viewModel.signUpState.collectAsState()
     val scope = rememberCoroutineScope()
 
-    Scaffold {
-        SignUpBody(
-            signUpState = signUpState,
-            onSignUpValueChange = viewModel::updateSignUpState,
-            viewModel = viewModel,
-            scope = scope,
-            modifier = modifier
-        )
+    Scaffold { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            SignUpBody(
+                signUpState = signUpState,
+                onSignUpValueChange = viewModel::updateSignUpState,
+                viewModel = viewModel,
+                scope = scope,
+                modifier = modifier
+            )
+
+            Button(
+                onClick = {
+                    scope.launch {
+                        if (viewModel.signUp(signUpState)) {
+                            navigateToHomeScreen()
+                        }
+                    }
+                },
+
+                modifier = modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(innerPadding)
+            ) {
+                Text("Sign up")
+            }
+        }
     }
 }
 
@@ -79,21 +103,6 @@ fun SignUpBody(
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth()
             )
-        }
-        item {
-            Button(
-                onClick = {
-                    scope.launch {
-                        viewModel.signUp(signUpState)
-                    }
-                },
-
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 16.dp)
-            ) {
-                Text("Add Incident")
-            }
         }
     }
 }

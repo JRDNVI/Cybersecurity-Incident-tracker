@@ -21,13 +21,14 @@ fun IncidentTrackerNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = HomeDestination.route,
+        startDestination = SignInDestination.route,
         modifier = modifier
     ) {
 
         composable(route = SignInDestination.route) {
             SignInScreen(
-                navigateToHomeScreen = { navController.navigate(HomeDestination.route) }
+                navigateToHomeScreen = { navController.navigate(HomeDestination.route) },
+                navigateToSignUpScreen = { navController.navigate(SignUpDestination.route) }
             )
         }
         composable(route = HomeDestination.route) {

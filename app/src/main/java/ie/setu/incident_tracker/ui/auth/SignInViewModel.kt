@@ -1,33 +1,34 @@
 package ie.setu.incident_tracker.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ie.setu.incident_tracker.data.user.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 class SignInViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _signInUiState = MutableStateFlow(SignInState())
     val signInState: StateFlow<SignInState> = _signInUiState.asStateFlow()
 
-    fun userAuth(username: String, password: String) {
-        viewModelScope.launch {
-            userRepository.getUserByName(username)
-                .map { user ->
-                    if (user != null && user.password == password) {
-                        SignInState(username = username, isAuth = true)
-                    } else {
-                        SignInState(username = username, errorMessage = "Invalid Details")
-                    }
-                }
-                .collect { newState ->
-                    _signInUiState.value = newState
+    suspend fun userAuth(username: String, password: String): Boolean {
+        val user = userRepository.getUserByName(username).firstOrNull()
+        Log.d("SignInViewModel", "User retrieved: $user")
 
-                }
-        }
+        val isAuthenticated = user != null && user.password == password
+
+        _signInUiState.value = SignInState(
+            username = username,
+            isAuth = isAuthenticated,
+            errorMessage = if (isAuthenticated) "" else "Invalid Details"
+        )
+
+        return isAuthenticated
     }
 
     fun updateUiState(signInState: SignInState) {
