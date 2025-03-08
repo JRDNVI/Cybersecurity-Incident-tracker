@@ -4,4 +4,7 @@
     <string name="Add_incident_screen">Add Incident Screen</string>
     <string name="back">Back</string>
     <string name="edit_incident_icon">Edit Incident</string>
+    <string name="SignIn_screen">Sign-In</string>
+    <string name="SignUp_screen">Sign-Up</string>
+
 </resources>

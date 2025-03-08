@@ -113,7 +113,7 @@ fun HomeBody(
                 .fillMaxWidth()
                 .padding(12.dp)
         )
-        if(incidentList.isEmpty()) {
+        if (incidentList.isEmpty()) {
             Text(
                 text = "No Incidents",
                 textAlign = TextAlign.Center,
