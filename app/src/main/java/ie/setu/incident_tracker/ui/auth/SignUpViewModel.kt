@@ -14,12 +14,26 @@ class SignUpViewModel(private val userRepository: UserRepository) : ViewModel() 
 
     suspend fun signUp(user: SignUpState) : Boolean {
         try {
+            if (!validateSignUp(user.username, user.password)) {
+                return false
+            }
             userRepository.insertItem(user.toUser())
             return true
         } catch (e: Exception) {
             e.printStackTrace()
             return false
         }
+    }
+
+    private fun validateSignUp(username: String, password: String): Boolean {
+        if (username.isBlank() || password.isBlank()) {
+            _signUpUiState.value = _signUpUiState.value.copy(errorMessage = "Username and password cannot be blank")
+            return false
+        } else if (password.length < 2) {
+            _signUpUiState.value = _signUpUiState.value.copy(errorMessage = "Password must be at least 2 characters long")
+            return false
+        }
+        return true
     }
 
     fun updateSignUpState(signUpState: SignUpState) {
@@ -35,5 +49,6 @@ fun SignUpState.toUser(): User = User(
 
 data class SignUpState(
     val username: String = "",
-    val password: String = ""
+    val password: String = "",
+    val errorMessage: String = ""
 )
