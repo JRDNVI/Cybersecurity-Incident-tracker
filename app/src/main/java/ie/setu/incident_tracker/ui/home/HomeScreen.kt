@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,7 +21,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -79,7 +78,7 @@ fun HomeScreen(
                 title = stringResource(HomeDestination.titleRes),
                 canNavigateBack = false,
                 actions = {
-                    IconButton(onClick = {expand = true}) {
+                    IconButton(onClick = { expand = true }) {
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Menu",
@@ -92,6 +91,19 @@ fun HomeScreen(
                         modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)
 
                     ) {
+
+                        DropdownMenuItem(
+                            text = { Text("Analytics", fontSize = 16.sp) },
+                            onClick = {
+                                expand = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Profile", fontSize = 16.sp) },
+                            onClick = {
+                                expand = false
+                            }
+                        )
                         DropdownMenuItem(
                             text = { Text("Logout", fontSize = 16.sp) },
                             onClick = {
@@ -105,9 +117,9 @@ fun HomeScreen(
         },
         bottomBar = {
             IncidentTrackerBottomBar(
-                navigateToHome = {  },
+                navigateToHome = { },
                 additionalIcons = listOf(
-                    Icons.Default.Add to { navigateToAddIncident()}
+                    Icons.Default.Add to { navigateToAddIncident() }
                 )
             )
         }
@@ -122,7 +134,7 @@ fun HomeScreen(
                 onIncidentSelected = navigateToIncidentDetails,
                 onEditIncidentSelected = navigateToEditIncident,
                 filterText = homeUiState.filterByIncidentTitle,
-                onDeleteIncidentSelected = {viewModel.deleteIncident(it)},
+                onDeleteIncidentSelected = { viewModel.deleteIncident(it) },
                 onFilterTextChange = { viewModel.updateSearchBox(it) },
                 modifier = Modifier.fillMaxSize()
             )
@@ -159,9 +171,9 @@ fun HomeBody(
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge
             )
-        }
-        else {
-            val filteredIncidents = incidentList.filter { it.title.contains(filterText, ignoreCase = true ) }
+        } else {
+            val filteredIncidents =
+                incidentList.filter { it.title.contains(filterText, ignoreCase = true) }
             ListIncidents(
                 incidentList = filteredIncidents,
                 onIncidentSelected = onIncidentSelected,
@@ -184,7 +196,7 @@ fun ListIncidents(
     LazyColumn(modifier = modifier) {
         items(incidentList, key = { it.incidentID }) { incident ->
             var isExpanded by remember { mutableStateOf(false) }
-            var showDeleteDialog by remember { mutableStateOf(false) }
+            var showDialog by remember { mutableStateOf(false) }
 
             Card(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
@@ -260,7 +272,7 @@ fun ListIncidents(
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                                 IconButton(
-                                    onClick = { onDeleteIncidentSelected(incident) },
+                                    onClick = { showDialog = true },
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
@@ -269,6 +281,28 @@ fun ListIncidents(
                                     )
                                 }
                             }
+                        }
+                        if (showDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showDialog = false },
+                                title = { Text("Delete Incident") },
+                                text = { Text("Are you sure you want to delete this incident?") },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            showDialog = false
+                                            onDeleteIncidentSelected(incident)
+                                        }
+                                    ) {
+                                        Text("Delete")
+                                    }
+                                },
+                                dismissButton = {
+                                    Button(onClick = { showDialog = false }) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            )
                         }
                     }
                 }
