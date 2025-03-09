@@ -12,6 +12,7 @@ import ie.setu.incident_tracker.ui.incident.AddIncidentViewModel
 import ie.setu.incident_tracker.ui.auth.SignUpViewModel
 import ie.setu.incident_tracker.ui.device.AddDeviceViewModel
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsViewModel
+import ie.setu.incident_tracker.ui.device.EditDeviceViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
@@ -51,6 +52,13 @@ object AppViewModelProvider {
             ViewIncidentDetailsViewModel(
                 this.createSavedStateHandle(),
                 IncidentTrackerApplication().container.incidentRepository,
+                IncidentTrackerApplication().container.deviceRepository
+            )
+        }
+
+        initializer {
+            EditDeviceViewModel(
+                this.createSavedStateHandle(),
                 IncidentTrackerApplication().container.deviceRepository
             )
         }

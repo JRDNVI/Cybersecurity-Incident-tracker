@@ -44,6 +44,9 @@ class ViewIncidentDetailsViewModel(
                 initialValue = IncidentDetailsUiState()
             )
 
+    suspend fun deleteDevice(device: Device) {
+        deviceRepository.deleteItem(device)
+    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L

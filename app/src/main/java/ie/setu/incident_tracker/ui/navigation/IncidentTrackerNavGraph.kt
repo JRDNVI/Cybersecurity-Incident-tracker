@@ -13,6 +13,8 @@ import ie.setu.incident_tracker.ui.auth.SignUpDestination
 import ie.setu.incident_tracker.ui.auth.SignUpScreen
 import ie.setu.incident_tracker.ui.device.AddDeviceDestination
 import ie.setu.incident_tracker.ui.device.AddDeviceScreen
+import ie.setu.incident_tracker.ui.device.EditDeviceDestination
+import ie.setu.incident_tracker.ui.device.EditDeviceScreen
 import ie.setu.incident_tracker.ui.home.HomeDestination
 import ie.setu.incident_tracker.ui.home.HomeScreen
 import ie.setu.incident_tracker.ui.incident.AddIncidentDestination
@@ -67,7 +69,20 @@ fun IncidentTrackerNavHost(
             ViewIncidentDetailsScreen(
                 navigateBack = { navController.popBackStack() },
                 navigateToHome = { navController.navigate(HomeDestination.route) },
-                navigateToAddDevice = { navController.navigate("${AddDeviceDestination.route}/${it}") }
+                navigateToAddDevice = { navController.navigate("${AddDeviceDestination.route}/${it}") },
+                navigateToEditDevice = { navController.navigate("${EditDeviceDestination.route}/${it}") }
+            )
+        }
+
+        composable(
+            route = EditDeviceDestination.routeWithArgs,
+            arguments = listOf(navArgument(EditDeviceDestination.deivceIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            EditDeviceScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
             )
         }
 
@@ -79,6 +94,7 @@ fun IncidentTrackerNavHost(
         ) {
             AddDeviceScreen(
                 navigateBack = { navController.popBackStack() },
+                navigateToHome = { navController.navigate(HomeDestination.route) }
 
             )
         }

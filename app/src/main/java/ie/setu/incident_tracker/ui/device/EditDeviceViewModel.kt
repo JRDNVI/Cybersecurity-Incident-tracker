@@ -1,24 +1,36 @@
 package ie.setu.incident_tracker.ui.device
 
-import android.view.View
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import ie.setu.incident_tracker.data.device.Device
 import ie.setu.incident_tracker.data.device.DeviceRepository
-import ie.setu.incident_tracker.data.user.UserRepository
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-class AddDeviceViewModel(
+class EditDeviceViewModel(
     savedStateHandle: SavedStateHandle,
     private val deviceRepository: DeviceRepository
-) : ViewModel() {
 
-    private val incidentID: Int = checkNotNull(savedStateHandle[AddDeviceDestination.IncidentIDArg])
+) : ViewModel() {
 
     var deviceUiState by mutableStateOf(DeviceUiState())
         private set
+
+    private val deviceID: Int = checkNotNull(savedStateHandle[EditDeviceDestination.deivceIdArg])
+
+    init {
+        viewModelScope.launch {
+            deviceUiState = deviceRepository.getItemStream(deviceID)
+                .filterNotNull()
+                .first()
+                .toDeviceUiState(true)
+        }
+    }
 
     private fun validateInput(uiState: DeviceDetails = deviceUiState.deviceDetails): Boolean {
         return with(uiState) {
@@ -29,33 +41,25 @@ class AddDeviceViewModel(
     fun updateUiState(deviceDetails: DeviceDetails) {
         deviceUiState =
             DeviceUiState(
-                deviceDetails = deviceDetails.copy(incidentID = incidentID),
-                isEntryValid = validateInput(deviceDetails))
+                deviceDetails = deviceDetails,
+                isEntryValid = validateInput(deviceDetails)
+            )
     }
 
-    suspend fun saveItem() {
-        if (validateInput()) {
-            deviceRepository.insertItem(deviceUiState.deviceDetails.toItem())
+    suspend fun updateItem() {
+        if (validateInput(deviceUiState.deviceDetails)) {
+            deviceRepository.updateItem(deviceUiState.deviceDetails.toItem())
         }
     }
 }
 
-data class DeviceUiState(
-    val deviceDetails: DeviceDetails = DeviceDetails(),
-    val isEntryValid: Boolean = false
+fun Device.toDeviceUiState(isEntryValid: Boolean = false): DeviceUiState = DeviceUiState(
+    deviceDetails = this.toDeviceDetails(),
+    isEntryValid = isEntryValid
 )
 
-data class DeviceDetails(
-    val deviceID: Int = 0,
-    val name: String = "",
-    val ipAddress: String = "",
-    val macAddress: String = "",
-    val operatingSystem: String = "",
-    val cveNumber: String = "",
-    val incidentID: Int = 0
-)
 
-fun DeviceDetails.toItem(): Device = Device(
+fun Device.toDeviceDetails(): DeviceDetails = DeviceDetails(
     deviceID = deviceID,
     name = name,
     ipAddress = ipAddress,

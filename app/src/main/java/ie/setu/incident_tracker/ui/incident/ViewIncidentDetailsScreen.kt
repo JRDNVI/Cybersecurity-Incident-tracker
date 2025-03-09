@@ -9,15 +9,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,6 +42,7 @@ import ie.setu.incident_tracker.data.device.Device
 import ie.setu.incident_tracker.ui.AppViewModelProvider
 import ie.setu.incident_tracker.ui.navigation.NavigationDestination
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 data object ViewIncidentDetailsDestination : NavigationDestination {
     override val route = "incident_details"
@@ -42,8 +55,9 @@ data object ViewIncidentDetailsDestination : NavigationDestination {
 @Composable
 fun ViewIncidentDetailsScreen(
     navigateBack: () -> Unit,
-    navigateToHome:() -> Unit,
+    navigateToHome: () -> Unit,
     navigateToAddDevice: (Int) -> Unit,
+    navigateToEditDevice: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -76,7 +90,7 @@ fun ViewIncidentDetailsScreen(
         ) {
             IncidentDetailsBody(
                 incidentDetailsUiState = viewIncidentUiState.value,
-                selectedDevice = navigateToAddDevice,
+                selectedDevice = navigateToEditDevice,
                 scope = scope,
                 viewModel = viewModel,
                 modifier = modifier
@@ -94,7 +108,7 @@ fun IncidentDetailsBody(
     viewModel: ViewIncidentDetailsViewModel,
     modifier: Modifier = Modifier
 
-    ) {
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -164,8 +178,20 @@ fun ListDevices(
     viewModel: ViewIncidentDetailsViewModel,
     modifier: Modifier = Modifier
 ) {
-
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(deviceList) { device ->
+            DeviceCard(
+                device = device,
+                selectedDevice = selectedDevice,
+                scope = scope,
+                viewModel = viewModel
+            )
+        }
+    }
 }
+
 
 @Composable
 fun DeviceCard(
@@ -175,4 +201,89 @@ fun DeviceCard(
     viewModel: ViewIncidentDetailsViewModel
 ) {
 
+    var showDialog by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        shape = MaterialTheme.shapes.medium,
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Device Name: ${device.name}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "IP Address: ${device.ipAddress}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "MAC Address: ${device.macAddress}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "OS: ${device.operatingSystem}",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Text(
+                    text = "CVE: ${device.cveNumber}",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+
+            Row {
+                IconButton(onClick = { selectedDevice(device.deviceID) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.edit_device_icon),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                IconButton(onClick = { showDialog = true }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.delete_device_icon),
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        }
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Delete Device") },
+            text = { Text("Are you sure you want to delete this device?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                        scope.launch {
+                            viewModel.deleteDevice(device)
+                        }
+                    }
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
