@@ -19,6 +19,8 @@ import ie.setu.incident_tracker.ui.home.HomeDestination
 import ie.setu.incident_tracker.ui.home.HomeScreen
 import ie.setu.incident_tracker.ui.incident.AddIncidentDestination
 import ie.setu.incident_tracker.ui.incident.AddIncidentScreen
+import ie.setu.incident_tracker.ui.incident.EditIncidentDestination
+import ie.setu.incident_tracker.ui.incident.EditIncidentScreen
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsDestination
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsScreen
 
@@ -42,7 +44,7 @@ fun IncidentTrackerNavHost(
         composable(route = HomeDestination.route) {
             HomeScreen(
                 navigateToAddIncident = { navController.navigate(AddIncidentDestination.route) },
-                navigateToEditIncident = {  },
+                navigateToEditIncident = { navController.navigate("${EditIncidentDestination.route}/${it}") },
                 navigateToIncidentDetails = { navController.navigate("${ViewIncidentDetailsDestination.route}/${it}")}
             )
         }
@@ -85,6 +87,18 @@ fun IncidentTrackerNavHost(
                 onNavigateUp = { navController.navigateUp() }
             )
         }
+
+        composable(
+            route = EditIncidentDestination.routeWithArgs,
+            arguments = listOf(navArgument(EditIncidentDestination.incidentIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            EditIncidentScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+    }
 
         composable(
             route = AddDeviceDestination.routeWithArgs,

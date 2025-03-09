@@ -1,8 +1,11 @@
 package ie.setu.incident_tracker
 
 import android.icu.text.CaseMap.Title
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
@@ -74,10 +77,14 @@ fun IncidentTrackerBottomBar(
             )
         }
         additionalIcons.forEach { (icon, action) ->
+            Spacer(modifier = Modifier.weight(0.5f))
             IconButton(onClick = action) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "Additional Icon"
+                    contentDescription = "Additional Icon",
+
+                    modifier = Modifier
+                        .size(32.dp)
                 )
             }
         }
