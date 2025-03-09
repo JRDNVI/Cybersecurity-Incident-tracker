@@ -6,5 +6,9 @@
     <string name="edit_incident_icon">Edit Incident</string>
     <string name="SignIn_screen">Sign-In</string>
     <string name="SignUp_screen">Sign-Up</string>
-
+    <string name="Incident_details_screen">Incident Details</string>"
+    <string name="edit_device_icon">Edit Device</string>
+    <string name="delete_device_icon">Delete Device</string>"
+    <string name="edit_device_screen">Edit Device Screen</string>"
+    <string name="edit_incident_screen">Edit Incident Screen</string>
 </resources>

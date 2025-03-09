@@ -40,8 +40,8 @@ data class IncidentDetails(
     val type: String = "",
     val dateOfOccurrence: String = "",
     val location: String = " ",
-    val longitude: Float = 0.0f,
-    val latitude: Float = 0.0f,
+    val longitude: String = "0",
+    val latitude: String = "0",
     val status: Boolean = false
 )
 
@@ -52,8 +52,8 @@ fun IncidentDetails.toItem(): Incident = Incident(
     type = type,
     dateOfOccurrence = dateOfOccurrence,
     location = location,
-    longitude = longitude,
-    latitude = latitude,
+    longitude = longitude.toFloat(),
+    latitude = latitude.toFloat(),
     status = status
 )
 
@@ -69,7 +69,7 @@ fun Incident.toIncidentDetails(): IncidentDetails = IncidentDetails(
     type = type,
     dateOfOccurrence = dateOfOccurrence,
     location = location,
-    longitude = longitude,
-    latitude = latitude,
+    longitude = longitude.toString(),
+    latitude = latitude.toString(),
     status = status
 )

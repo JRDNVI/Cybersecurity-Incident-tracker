@@ -1,6 +1,7 @@
 package ie.setu.incident_tracker.ui
 
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -9,6 +10,11 @@ import ie.setu.incident_tracker.ui.auth.SignInViewModel
 import ie.setu.incident_tracker.ui.home.HomeViewModel
 import ie.setu.incident_tracker.ui.incident.AddIncidentViewModel
 import ie.setu.incident_tracker.ui.auth.SignUpViewModel
+import ie.setu.incident_tracker.ui.device.AddDeviceViewModel
+import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsViewModel
+import ie.setu.incident_tracker.ui.device.EditDeviceViewModel
+import ie.setu.incident_tracker.ui.incident.EditIncidentDestination
+import ie.setu.incident_tracker.ui.incident.EditIncidentViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
@@ -34,6 +40,34 @@ object AppViewModelProvider {
         initializer {
             SignUpViewModel(
                 IncidentTrackerApplication().container.userRepository
+            )
+        }
+
+        initializer {
+            AddDeviceViewModel(
+                this.createSavedStateHandle(),
+                IncidentTrackerApplication().container.deviceRepository
+            )
+        }
+
+        initializer {
+            ViewIncidentDetailsViewModel(
+                this.createSavedStateHandle(),
+                IncidentTrackerApplication().container.incidentRepository,
+                IncidentTrackerApplication().container.deviceRepository
+            )
+        }
+
+        initializer {
+            EditDeviceViewModel(
+                this.createSavedStateHandle(),
+                IncidentTrackerApplication().container.deviceRepository
+            )
+        }
+        initializer {
+            EditIncidentViewModel(
+                this.createSavedStateHandle(),
+                IncidentTrackerApplication().container.incidentRepository
             )
         }
     }

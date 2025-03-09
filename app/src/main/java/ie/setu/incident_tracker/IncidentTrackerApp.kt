@@ -1,8 +1,11 @@
 package ie.setu.incident_tracker
 
 import android.icu.text.CaseMap.Title
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
@@ -16,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -59,6 +63,7 @@ fun IncidentTrackerTopAppBar(
 @Composable
 fun IncidentTrackerBottomBar(
     navigateToHome: () -> Unit,
+    additionalIcons: List<Pair<ImageVector, () -> Unit>> = emptyList()
 ) {
     BottomAppBar(
         modifier = Modifier.height(64.dp),
@@ -70,6 +75,18 @@ fun IncidentTrackerBottomBar(
                 imageVector = Icons.Default.Home,
                 contentDescription = "Navigate Home"
             )
+        }
+        additionalIcons.forEach { (icon, action) ->
+            Spacer(modifier = Modifier.weight(0.5f))
+            IconButton(onClick = action) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Additional Icon",
+
+                    modifier = Modifier
+                        .size(32.dp)
+                )
+            }
         }
     }
 }

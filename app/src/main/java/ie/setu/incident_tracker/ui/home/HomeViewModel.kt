@@ -25,6 +25,12 @@ class HomeViewModel(private val incidentRepository: IncidentRepository) : ViewMo
         }
     }
 
+    fun deleteIncident(incident: Incident) {
+        viewModelScope.launch {
+            incidentRepository.deleteItem(incident)
+        }
+    }
+
     fun updateSearchBox(newFilter: String) {
         _homeUiState.value = _homeUiState.value.copy(filterByIncidentTitle = newFilter)
     }
