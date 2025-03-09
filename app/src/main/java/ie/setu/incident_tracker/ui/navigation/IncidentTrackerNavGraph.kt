@@ -45,7 +45,8 @@ fun IncidentTrackerNavHost(
             HomeScreen(
                 navigateToAddIncident = { navController.navigate(AddIncidentDestination.route) },
                 navigateToEditIncident = { navController.navigate("${EditIncidentDestination.route}/${it}") },
-                navigateToIncidentDetails = { navController.navigate("${ViewIncidentDetailsDestination.route}/${it}")}
+                navigateToIncidentDetails = { navController.navigate("${ViewIncidentDetailsDestination.route}/${it}")},
+                navigateToSignInScreen = { navController.navigate(SignInDestination.route) }
             )
         }
 

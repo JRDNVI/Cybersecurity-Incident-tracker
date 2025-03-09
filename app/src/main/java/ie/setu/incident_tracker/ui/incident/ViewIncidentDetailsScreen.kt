@@ -1,6 +1,7 @@
 package ie.setu.incident_tracker.ui.incident
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,14 +19,19 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -61,7 +67,7 @@ fun ViewIncidentDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
-    val viewIncidentUiState = viewModel.uiState.collectAsState()
+    val viewIncidentUiState = viewModel.incidentDetailsUiState.collectAsState()
     val scope = rememberCoroutineScope()
     Log.d("ViewIncidentDetailsScreen", "Incident ID: $viewIncidentUiState")
 
@@ -116,6 +122,10 @@ fun IncidentDetailsBody(
             .padding(16.dp)
     ) {
         Card(
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium
         ) {
@@ -136,7 +146,7 @@ fun IncidentDetailsBody(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = incidentDetailsUiState.incidentDetails.dateOfOccurrence + " " + incidentDetailsUiState.incidentDetails.status,
+                        text = incidentDetailsUiState.incidentDetails.dateOfOccurrence,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
@@ -146,22 +156,50 @@ fun IncidentDetailsBody(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-
+                Text(
+                    text = "Attack Type: ${incidentDetailsUiState.incidentDetails.type}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
                 Text(
                     text = "Location: ${incidentDetailsUiState.incidentDetails.location}",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+                Text(
+                    text = "Status: ${if (incidentDetailsUiState.incidentDetails.status) "Open" else "Closed"}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Row {
+                    Text(
+                        text = "Longitude: ${incidentDetailsUiState.incidentDetails.longitude}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "Latitude: ${incidentDetailsUiState.incidentDetails.latitude}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Card(
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium
         ) {
             ListDevices(
                 deviceList = incidentDetailsUiState.deviceList,
                 selectedDevice = selectedDevice,
+                onFilterTextChange = { viewModel.updateFilterText(it) },
+                filterText = incidentDetailsUiState.filterText,
                 scope = scope,
                 viewModel = viewModel,
                 modifier = Modifier.padding(16.dp)
@@ -170,22 +208,57 @@ fun IncidentDetailsBody(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListDevices(
     deviceList: List<Device>,
     selectedDevice: (Int) -> Unit,
+    onFilterTextChange: (String) -> Unit,
+    filterText: String,
     scope: CoroutineScope,
     viewModel: ViewIncidentDetailsViewModel,
     modifier: Modifier = Modifier
 ) {
+    val affectedDevices = remember { mutableIntStateOf(0) }
+    affectedDevices.intValue = deviceList.size
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Text(
+            text = "Affected Devices: ${affectedDevices.intValue}",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(8.dp)
+        )
+
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextField(
+            value = filterText ,
+            onValueChange = onFilterTextChange,
+            label = { Text("Filter Devices") },
+            modifier = Modifier.weight(1f),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        )
+    }
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(deviceList) { device ->
+        val filteredDevices = deviceList.filter { it.name.contains(filterText, ignoreCase = true) }
+        items(filteredDevices) { device ->
             DeviceCard(
                 device = device,
                 selectedDevice = selectedDevice,
                 scope = scope,
+                modifier = modifier,
                 viewModel = viewModel
             )
         }
@@ -198,15 +271,19 @@ fun DeviceCard(
     device: Device,
     selectedDevice: (Int) -> Unit,
     scope: CoroutineScope,
+    modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
 
     Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(6.dp),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -233,11 +310,13 @@ fun DeviceCard(
                 )
                 Text(
                     text = "OS: ${device.operatingSystem}",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
                     text = "CVE: ${device.cveNumber}",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
             }
 

@@ -2,6 +2,7 @@ package ie.setu.incident_tracker.ui.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,10 +21,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ie.setu.incident_tracker.IncidentTrackerBottomBar
 import ie.setu.incident_tracker.IncidentTrackerTopAppBar
@@ -61,17 +66,41 @@ fun HomeScreen(
     navigateToAddIncident: () -> Unit,
     navigateToIncidentDetails: (Int) -> Unit,
     navigateToEditIncident: (Int) -> Unit,
+    navigateToSignInScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
+    var expand by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             IncidentTrackerTopAppBar(
                 title = stringResource(HomeDestination.titleRes),
                 canNavigateBack = false,
-                actions = { },
+                actions = {
+                    IconButton(onClick = {expand = true}) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = expand,
+                        onDismissRequest = { expand = false },
+                        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Logout", fontSize = 16.sp) },
+                            onClick = {
+                                expand = false
+                                navigateToSignInScreen()
+                            }
+                        )
+                    }
+                },
             )
         },
         bottomBar = {
