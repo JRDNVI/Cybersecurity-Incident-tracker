@@ -20,15 +20,19 @@ class SignInViewModel(private val userRepository: UserRepository) : ViewModel() 
         val user = userRepository.getUserByName(username).firstOrNull()
         Log.d("SignInViewModel", "User retrieved: $user")
 
-        val isAuthenticated = user != null && user.password == password
+        val isAuthenticated = user != null && validateSignIn(user.username, user.password) && password == user.password
 
         _signInUiState.value = SignInState(
             username = username,
             isAuth = isAuthenticated,
-            errorMessage = if (isAuthenticated) "" else "Invalid Details"
+            errorMessage = if (!isAuthenticated) "Invalid username or password" else ""
         )
 
         return isAuthenticated
+    }
+
+    private fun validateSignIn(username: String, password: String): Boolean {
+        return !(username.isBlank() || password.isBlank())
     }
 
     fun updateUiState(signInState: SignInState) {

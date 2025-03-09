@@ -54,7 +54,7 @@ fun EditDeviceScreen(
                 .fillMaxSize()
         ) {
             AddDeviceScreen(
-                deviceDetails = deviceUiState.deviceDetails,
+                deviceUiState = deviceUiState,
                 onDeviceValueChange = viewModel::updateUiState,
                 onSaveClick = {
                     scope.launch {
