@@ -84,7 +84,7 @@ fun IncidentTrackerNavHost(
             })
         ) {
             EditDeviceScreen(
-                navigateBack = { navController.popBackStack() },
+                navigateBack = { navController.navigate(HomeDestination.route) },
                 onNavigateUp = { navController.navigateUp() }
             )
         }

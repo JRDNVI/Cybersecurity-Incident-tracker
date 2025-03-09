@@ -59,7 +59,7 @@ fun EditDeviceScreen(
                 onSaveClick = {
                     scope.launch {
                         viewModel.updateItem()
-                        navigateBack()
+                        onNavigateUp()
                     }
                 }
             )
