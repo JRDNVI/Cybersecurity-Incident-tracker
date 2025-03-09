@@ -34,7 +34,6 @@ class SignInViewModel(private val userRepository: UserRepository) : ViewModel() 
     fun updateUiState(signInState: SignInState) {
         _signInUiState.value = SignInState(username = signInState.username, password = signInState.password, isAuth = false, errorMessage = "")
     }
-
 }
 
 data class SignInState(

@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -59,6 +60,7 @@ fun IncidentTrackerTopAppBar(
 @Composable
 fun IncidentTrackerBottomBar(
     navigateToHome: () -> Unit,
+    additionalIcons: List<Pair<ImageVector, () -> Unit>> = emptyList()
 ) {
     BottomAppBar(
         modifier = Modifier.height(64.dp),
@@ -70,6 +72,14 @@ fun IncidentTrackerBottomBar(
                 imageVector = Icons.Default.Home,
                 contentDescription = "Navigate Home"
             )
+        }
+        additionalIcons.forEach { (icon, action) ->
+            IconButton(onClick = action) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Additional Icon"
+                )
+            }
         }
     }
 }
