@@ -3,6 +3,8 @@ package ie.setu.incident_tracker.data.device
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.Index
+
 import ie.setu.incident_tracker.data.incident.Incident
 
 @Entity(
@@ -13,6 +15,7 @@ import ie.setu.incident_tracker.data.incident.Incident
         childColumns = ["incidentID"],
         onDelete = ForeignKey.CASCADE
     )],
+    indices = [Index(value = ["incidentID"])]
 )
 data class Device (
     @PrimaryKey(autoGenerate = true)

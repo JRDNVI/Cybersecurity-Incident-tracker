@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "608715962863",
+    "project_id": "cybersecurity-incident-t-27103",
+    "storage_bucket": "cybersecurity-incident-t-27103.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608715962863:android:3ffb5d0bed028331231e1a",
+        "android_client_info": {
+          "package_name": "ie.setu.incident_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7T2DugDzFM8LMr2XFOzJfFLorjLKAqxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

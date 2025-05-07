@@ -1,5 +1,4 @@
 package ie.setu.incident_tracker.ui
-
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -13,7 +12,6 @@ import ie.setu.incident_tracker.ui.auth.SignUpViewModel
 import ie.setu.incident_tracker.ui.device.AddDeviceViewModel
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsViewModel
 import ie.setu.incident_tracker.ui.device.EditDeviceViewModel
-import ie.setu.incident_tracker.ui.incident.EditIncidentDestination
 import ie.setu.incident_tracker.ui.incident.EditIncidentViewModel
 
 object AppViewModelProvider {
