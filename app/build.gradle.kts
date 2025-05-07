@@ -2,8 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
-    id("com.google.devtools.ksp") version "2.0.20-1.0.25"
+    alias(libs.plugins.kotlin.android.ksp)
     alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -57,12 +58,20 @@ dependencies {
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
+    implementation(libs.androidx.espresso.core)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
+
     // DataStore (Might not use)
     implementation("androidx.datastore:datastore-preferences:${rootProject.extra["datastore_version"]}")
+
     //Navigation
     implementation("androidx.navigation:navigation-compose:${rootProject.extra["nav_version"]}")
+
+    //Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
