@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
-    alias(libs.plugins.kotlin.android.ksp)
-    alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.ksp)
+    id("com.google.gms.google-services")
     alias(libs.plugins.hilt.android)
 }
 
@@ -44,13 +44,17 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "2.0.20"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    ksp {
+        arg("ksp.incremental", "false")
+    }
+
 }
 
 dependencies {
@@ -59,6 +63,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
     implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.lifecycle.compiler)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 

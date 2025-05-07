@@ -6,11 +6,10 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import ie.setu.incident_tracker.data.firebase.services.AuthService
 import ie.setu.incident_tracker.data.firebase.services.FirebaseSignInResponse
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
-class AuthRepository
-@Inject constructor(private val firebaseAuth: FirebaseAuth)
-    : AuthService {
+class AuthRepository(
+    private val firebaseAuth: FirebaseAuth
+) : AuthService {
 
     override val currentUserId: String
         get() = firebaseAuth.currentUser?.uid.orEmpty()
