@@ -23,7 +23,8 @@ object AppViewModelProvider {
         initializer {
             HomeViewModel(
                 IncidentTrackerApplication().container.incidentRepository,
-                IncidentTrackerApplication().container.authRepository
+                IncidentTrackerApplication().container.authRepository,
+                IncidentTrackerApplication().container.fireStoreRepository
             )
         }
 
@@ -42,7 +43,9 @@ object AppViewModelProvider {
 
         initializer {
             AddIncidentViewModel(
-                IncidentTrackerApplication().container.incidentRepository
+                IncidentTrackerApplication().container.incidentRepository,
+                IncidentTrackerApplication().container.authRepository,
+                IncidentTrackerApplication().container.fireStoreRepository
             )
         }
 
@@ -82,7 +85,9 @@ object AppViewModelProvider {
         initializer {
             EditIncidentViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.incidentRepository
+                IncidentTrackerApplication().container.incidentRepository,
+                IncidentTrackerApplication().container.authRepository,
+                IncidentTrackerApplication().container.fireStoreRepository
             )
         }
     }

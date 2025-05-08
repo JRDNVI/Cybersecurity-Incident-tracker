@@ -109,14 +109,15 @@ fun IncidentTrackerNavHost(
         composable(
             route = EditIncidentDestination.routeWithArgs,
             arguments = listOf(navArgument(EditIncidentDestination.incidentIdArg) {
-                type = NavType.IntType
+                type = NavType.StringType
             })
         ) {
             EditIncidentScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )
-    }
+        }
+
 
         composable(
             route = AddDeviceDestination.routeWithArgs,
