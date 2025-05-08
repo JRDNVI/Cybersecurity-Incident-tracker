@@ -20,17 +20,17 @@ class LoginViewModel(
     private val _loginFlow = MutableStateFlow<FirebaseSignInResponse?>(null)
     val loginFlow: StateFlow<FirebaseSignInResponse?> = _loginFlow
 
-    private var loginUIState = mutableStateOf(LoginUIState())
+    var loginUIState = mutableStateOf(LoginUIState())
     var allValidationsPassed = mutableStateOf(false)
 
     val currentUser: FirebaseUser?
         get() = authService.currentUser
 
-    init {
-        if (authService.currentUser != null) {
-            _loginFlow.value = Response.Success(authService.currentUser!!)
-        }
-    }
+//    init {
+//        if (authService.currentUser != null) {
+//            _loginFlow.value = Response.Success(authService.currentUser!!)
+//        }
+//    }
 
     fun loginUser() = viewModelScope.launch {
 

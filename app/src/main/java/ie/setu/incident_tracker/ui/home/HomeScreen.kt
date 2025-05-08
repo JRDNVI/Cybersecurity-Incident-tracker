@@ -72,10 +72,15 @@ fun HomeScreen(
     val homeUiState by viewModel.homeUiState.collectAsState()
     var expand by remember { mutableStateOf(false) }
 
+    val currentUser = viewModel.currentUser
+    val isActiveSession = viewModel.isAuthenticated()
+    val userEmail = if (isActiveSession) currentUser?.email else ""
+    val userName = if (isActiveSession) currentUser?.displayName else ""
+
     Scaffold(
         topBar = {
             IncidentTrackerTopAppBar(
-                title = stringResource(HomeDestination.titleRes),
+                title = "Welcome, ${userName ?: "User"}",
                 canNavigateBack = false,
                 actions = {
                     IconButton(onClick = { expand = true }) {

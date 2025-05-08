@@ -22,7 +22,8 @@ object AppViewModelProvider {
 
         initializer {
             HomeViewModel(
-                IncidentTrackerApplication().container.incidentRepository
+                IncidentTrackerApplication().container.incidentRepository,
+                IncidentTrackerApplication().container.authRepository
             )
         }
 

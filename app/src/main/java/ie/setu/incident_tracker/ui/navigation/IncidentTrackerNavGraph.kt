@@ -41,7 +41,8 @@ fun IncidentTrackerNavHost(
 
         composable(route = LoginScreenDestination.route) {
             LoginScreen(
-                navigateToRegisterScreen = { navController.navigate(RegisterScreenDestination.route) }
+                navigateToRegisterScreen = { navController.navigate(RegisterScreenDestination.route) },
+                navigateToHomeScreen = { navController.navigate(HomeDestination.route)}
             )
         }
 

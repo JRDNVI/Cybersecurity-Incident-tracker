@@ -1,5 +1,6 @@
 package ie.setu.incident_tracker.ui.auth.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ie.setu.incident_tracker.R
+import ie.setu.incident_tracker.data.firebase.auth.Response
 import ie.setu.incident_tracker.ui.AppViewModelProvider
 import ie.setu.incident_tracker.ui.navigation.NavigationDestination
 
@@ -23,15 +25,28 @@ object LoginScreenDestination : NavigationDestination {
 
 @Composable
 fun LoginScreen(
-    onLogin: () -> Unit = {},
+    navigateToHomeScreen: () -> Unit,
     navigateToRegisterScreen: () -> Unit,
     viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
     val context = LocalContext.current
-    val loginFlow = viewModel.loginFlow.collectAsState()
+    val loginFlow by viewModel.loginFlow.collectAsState()
+    val state = viewModel.loginUIState.value
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    LaunchedEffect(loginFlow) {
+        when (val result = loginFlow) {
+            is Response.Success -> {
+                Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
+                navigateToHomeScreen()
+                viewModel.resetLoginFlow()
+            }
+            is Response.Failure -> {
+                Toast.makeText(context, result.e.message ?: "Login failed", Toast.LENGTH_LONG).show()
+                viewModel.resetLoginFlow()
+            }
+            else -> Unit
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -55,31 +70,27 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        viewModel.onEvent(LoginUIEvent.EmailChanged(it))
-                    },
+                    value = state.email,
+                    onValueChange = { viewModel.onEvent(LoginUIEvent.EmailChanged(it)) },
                     label = { Text(stringResource(id = R.string.email)) },
+                    isError = state.emailError,
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        viewModel.onEvent(LoginUIEvent.PasswordChanged(it))
-                    },
+                    value = state.password,
+                    onValueChange = { viewModel.onEvent(LoginUIEvent.PasswordChanged(it)) },
                     label = { Text(stringResource(id = R.string.password)) },
                     visualTransformation = PasswordVisualTransformation(),
+                    isError = state.passwordError,
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                TextButton(onClick = { /* TODO: Forgot password logic */ }) {
+                TextButton(onClick = { /* TODO: Forgot password */ }) {
                     Text(text = stringResource(id = R.string.forgot_password))
                 }
 
@@ -88,13 +99,13 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         viewModel.onEvent(LoginUIEvent.LoginButtonClicked)
-                        onLogin()
                     },
                     enabled = viewModel.allValidationsPassed.value,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = stringResource(id = R.string.login))
                 }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
@@ -107,3 +118,4 @@ fun LoginScreen(
         }
     }
 }
+
