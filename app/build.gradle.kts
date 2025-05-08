@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.lifecycle.compiler)
+    implementation(libs.firebase.firestore)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
