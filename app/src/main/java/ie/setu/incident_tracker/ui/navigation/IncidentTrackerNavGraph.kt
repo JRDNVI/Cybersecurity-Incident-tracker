@@ -11,6 +11,10 @@ import ie.setu.incident_tracker.ui.auth.SignInDestination
 import ie.setu.incident_tracker.ui.auth.SignInScreen
 import ie.setu.incident_tracker.ui.auth.SignUpDestination
 import ie.setu.incident_tracker.ui.auth.SignUpScreen
+import ie.setu.incident_tracker.ui.auth.login.LoginScreen
+import ie.setu.incident_tracker.ui.auth.login.LoginScreenDestination
+import ie.setu.incident_tracker.ui.auth.register.RegisterScreen
+import ie.setu.incident_tracker.ui.auth.register.RegisterScreenDestination
 import ie.setu.incident_tracker.ui.device.AddDeviceDestination
 import ie.setu.incident_tracker.ui.device.AddDeviceScreen
 import ie.setu.incident_tracker.ui.device.EditDeviceDestination
@@ -31,9 +35,22 @@ fun IncidentTrackerNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = SignInDestination.route,
+        startDestination = LoginScreenDestination.route,
         modifier = modifier
     ) {
+
+        composable(route = LoginScreenDestination.route) {
+            LoginScreen(
+                navigateToRegisterScreen = { navController.navigate(RegisterScreenDestination.route) },
+                navigateToHomeScreen = { navController.navigate(HomeDestination.route)}
+            )
+        }
+
+        composable(route = RegisterScreenDestination.route) {
+            RegisterScreen(
+                navigateToHomeScreen = { navController.navigate(HomeDestination.route) }
+            )
+        }
 
         composable(route = SignInDestination.route) {
             SignInScreen(

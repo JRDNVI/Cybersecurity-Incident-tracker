@@ -1,7 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp") version "1.9.0-1.0.12"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
+    alias(libs.plugins.ksp)
+    id("com.google.gms.google-services")
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -41,24 +44,39 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    ksp {
+        arg("ksp.incremental", "false")
+    }
+
 }
 
 dependencies {
     // Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.lifecycle.compiler)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
+
     // DataStore (Might not use)
     implementation("androidx.datastore:datastore-preferences:${rootProject.extra["datastore_version"]}")
+
     //Navigation
     implementation("androidx.navigation:navigation-compose:${rootProject.extra["nav_version"]}")
+
+    //Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -6,9 +6,16 @@
     <string name="edit_incident_icon">Edit Incident</string>
     <string name="SignIn_screen">Sign-In</string>
     <string name="SignUp_screen">Sign-Up</string>
-    <string name="Incident_details_screen">Incident Details</string>"
+    <string name="Incident_details_screen">Incident Details</string>
     <string name="edit_device_icon">Edit Device</string>
-    <string name="delete_device_icon">Delete Device</string>"
-    <string name="edit_device_screen">Edit Device Screen</string>"
+    <string name="delete_device_icon">Delete Device</string>
+    <string name="edit_device_screen">Edit Device Screen</string>
     <string name="edit_incident_screen">Edit Incident Screen</string>
+    <string name="login">Login</string>
+    <string name="welcome">Welcome</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="forgot_password">forget password</string>
+    <string name="register">Register Screen</string>
+    <string name="no_account_register">Register</string>
 </resources>

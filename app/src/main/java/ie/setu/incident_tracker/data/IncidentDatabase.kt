@@ -11,7 +11,7 @@ import ie.setu.incident_tracker.data.incident.IncidentDao
 import ie.setu.incident_tracker.data.user.User
 import ie.setu.incident_tracker.data.user.UserDao
 
-@Database(entities = [Incident::class, Device::class, User::class], version = 1)
+@Database(entities = [Incident::class, Device::class, User::class], version = 1, exportSchema = false)
 abstract class IncidentDatabase : RoomDatabase() {
 
     abstract fun incidentDao(): IncidentDao
