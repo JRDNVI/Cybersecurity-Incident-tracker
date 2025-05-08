@@ -45,6 +45,7 @@ import ie.setu.incident_tracker.IncidentTrackerBottomBar
 import ie.setu.incident_tracker.IncidentTrackerTopAppBar
 import ie.setu.incident_tracker.R
 import ie.setu.incident_tracker.data.device.Device
+import ie.setu.incident_tracker.data.firebase.model.DeviceFireStore
 import ie.setu.incident_tracker.ui.AppViewModelProvider
 import ie.setu.incident_tracker.ui.navigation.NavigationDestination
 import kotlinx.coroutines.CoroutineScope
@@ -211,7 +212,7 @@ fun IncidentDetailsBody(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListDevices(
-    deviceList: List<Device>,
+    deviceList: List<DeviceFireStore>,
     selectedDevice: (Int) -> Unit,
     onFilterTextChange: (String) -> Unit,
     filterText: String,
@@ -268,7 +269,7 @@ fun ListDevices(
 
 @Composable
 fun DeviceCard(
-    device: Device,
+    device: DeviceFireStore,
     selectedDevice: (Int) -> Unit,
     scope: CoroutineScope,
     modifier: Modifier = Modifier,
@@ -321,14 +322,14 @@ fun DeviceCard(
             }
 
             Row {
-                IconButton(onClick = { selectedDevice(device.deviceID) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = stringResource(R.string.edit_device_icon),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+//                IconButton(onClick = { selectedDevice(device.deviceID) }
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Edit,
+//                        contentDescription = stringResource(R.string.edit_device_icon),
+//                        tint = MaterialTheme.colorScheme.primary
+//                    )
+//                }
                 IconButton(onClick = { showDialog = true }
                 ) {
                     Icon(
@@ -351,7 +352,7 @@ fun DeviceCard(
                     onClick = {
                         showDialog = false
                         scope.launch {
-                            viewModel.deleteDevice(device)
+                           // viewModel.deleteDevice(device)
                         }
                     }
                 ) {

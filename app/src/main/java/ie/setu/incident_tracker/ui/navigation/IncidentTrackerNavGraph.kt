@@ -83,7 +83,7 @@ fun IncidentTrackerNavHost(
         composable(
             route = ViewIncidentDetailsDestination.routeWithArgs,
             arguments = listOf(navArgument(ViewIncidentDetailsDestination.incidentIdArg) {
-                type = NavType.IntType
+                type = NavType.StringType
             })
         ) {
             ViewIncidentDetailsScreen(

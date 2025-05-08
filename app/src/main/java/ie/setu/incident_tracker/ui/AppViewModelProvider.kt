@@ -71,8 +71,9 @@ object AppViewModelProvider {
         initializer {
             ViewIncidentDetailsViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.incidentRepository,
-                IncidentTrackerApplication().container.deviceRepository
+                IncidentTrackerApplication().container.fireStoreRepository,
+                IncidentTrackerApplication().container.authRepository
+
             )
         }
 
