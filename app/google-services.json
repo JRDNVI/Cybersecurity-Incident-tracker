@@ -12,7 +12,20 @@
           "package_name": "ie.setu.incident_tracker"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "608715962863-6bunnr83ge2p5hf18pteuqq6kc631q9h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.setu.incident_tracker",
+            "certificate_hash": "a1f1eda10afb586668fc01f8339f6aa40294e3de"
+          }
+        },
+        {
+          "client_id": "608715962863-vqskp954nrc16evs3upc3qmnjlq5kejc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC7T2DugDzFM8LMr2XFOzJfFLorjLKAqxk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "608715962863-vqskp954nrc16evs3upc3qmnjlq5kejc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

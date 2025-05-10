@@ -1,11 +1,16 @@
 package ie.setu.incident_tracker.ui.incident
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ie.setu.incident_tracker.data.firebase.database.FireStoreRepository
+import ie.setu.incident_tracker.data.firebase.model.IncidentFireStore
+import ie.setu.incident_tracker.data.firebase.services.AuthService
+import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import ie.setu.incident_tracker.data.incident.IncidentRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -13,20 +18,29 @@ import kotlinx.coroutines.launch
 
 class EditIncidentViewModel(
     savedStateHandle: SavedStateHandle,
-    private val incidentRepository: IncidentRepository
+    private val incidentRepository: IncidentRepository,
+    private val authRepository: AuthService,
+    private val fireStoreRepository: FireStoreService
 ) : ViewModel() {
 
     var incidentUiState by mutableStateOf(IncidentUiState())
         private set
 
-    private val incidentID: Int = checkNotNull(savedStateHandle["incidentID"])
+    private val incidentID: String = checkNotNull(savedStateHandle["incidentID"])
+    private val userEmail = authRepository.email!!
+    private var fireStoreDocumentId: String? = null
 
     init {
         viewModelScope.launch {
-            incidentUiState = incidentRepository.getItemStream(incidentID)
-                .filterNotNull()
-                .first()
-                .toIncidentUiState(true)
+            fireStoreRepository.get(userEmail, incidentID)?.let { incidentFS ->
+                fireStoreDocumentId = incidentFS._id
+
+
+                incidentUiState = IncidentUiState(
+                    incidentDetails = incidentFS.toIncidentDetails(),
+                    isEntryValid = true
+                )
+            }
         }
     }
 
@@ -45,8 +59,28 @@ class EditIncidentViewModel(
     }
 
     suspend fun updateIncident() {
-        if (validateInput(incidentUiState.incidentDetails)) {
-            incidentRepository.updateItem(incidentUiState.incidentDetails.toItem())
-        }
+        if (!validateInput(incidentUiState.incidentDetails)) return
+
+        val updatedLocal = incidentUiState.incidentDetails.toItem().copy(email = userEmail)
+        incidentRepository.updateItem(updatedLocal)
+
+        val firestoreIncident = updatedLocal.toFireStoreModel().copy(
+            _id = fireStoreDocumentId ?: ""
+        )
+        fireStoreRepository.update(userEmail, firestoreIncident)
     }
+}
+
+fun IncidentFireStore.toIncidentDetails(): IncidentDetails {
+    return IncidentDetails(
+        title = this.title,
+        description = this.description,
+        type = this.type,
+        dateOfOccurrence = this.dateOfOccurrence,
+        location = this.location,
+        longitude = this.longitude.toString(),
+        latitude = this.latitude.toString(),
+        status = this.status,
+        email = this.email
+    )
 }

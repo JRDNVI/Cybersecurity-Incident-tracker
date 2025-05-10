@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
     alias(libs.plugins.ksp)
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.hilt.android)
 }
 
@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.lifecycle.compiler)
+    implementation(libs.firebase.firestore)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
@@ -77,6 +78,11 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.googleid)
+
+
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

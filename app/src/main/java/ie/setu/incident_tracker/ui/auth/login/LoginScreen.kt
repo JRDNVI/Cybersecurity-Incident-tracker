@@ -1,6 +1,8 @@
 package ie.setu.incident_tracker.ui.auth.login
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -23,6 +25,7 @@ object LoginScreenDestination : NavigationDestination {
     override val titleRes = R.string.login
 }
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun LoginScreen(
     navigateToHomeScreen: () -> Unit,
@@ -46,6 +49,10 @@ fun LoginScreen(
             }
             else -> Unit
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.signInWithGoogleCredentials(context)
     }
 
     Box(

@@ -21,8 +21,10 @@ import kotlinx.coroutines.launch
 object EditDeviceDestination : NavigationDestination {
     override val route = "edit_device"
     override val titleRes = R.string.edit_device_screen
-    const val deivceIdArg = "DeviceID"
-    val routeWithArgs = "$route/{$deivceIdArg}"
+    const val deivceIdArg = "deviceID"
+    const val incidentIdArg = "IncidentID"
+    val routeWithArgs = "$route/{$incidentIdArg}/{$deivceIdArg}"
+
 }
 
 @Composable

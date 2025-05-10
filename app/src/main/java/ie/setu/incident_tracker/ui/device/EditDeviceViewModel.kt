@@ -7,64 +7,87 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ie.setu.incident_tracker.data.device.Device
-import ie.setu.incident_tracker.data.device.DeviceRepository
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
+import ie.setu.incident_tracker.data.firebase.model.DeviceFireStore
+import ie.setu.incident_tracker.data.firebase.services.AuthService
+import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import kotlinx.coroutines.launch
 
 class EditDeviceViewModel(
     savedStateHandle: SavedStateHandle,
-    private val deviceRepository: DeviceRepository
-
+    private val fireStoreRepository: FireStoreService,
+    private val authRepository: AuthService
 ) : ViewModel() {
 
     var deviceUiState by mutableStateOf(DeviceUiState())
         private set
 
-    private val deviceID: Int = checkNotNull(savedStateHandle[EditDeviceDestination.deivceIdArg])
+    private val deviceID: String = checkNotNull(savedStateHandle[EditDeviceDestination.deivceIdArg])
+    private val incidentID: String = checkNotNull(savedStateHandle[EditDeviceDestination.incidentIdArg])
+    private val userEmail = authRepository.email!!
 
     init {
         viewModelScope.launch {
-            deviceUiState = deviceRepository.getItemStream(deviceID)
-                .filterNotNull()
-                .first()
-                .toDeviceUiState(true)
+            val incident = fireStoreRepository.get(userEmail, incidentID)
+            val device = incident?.devices?.find { it.deviceID == deviceID }
+
+            device?.let {
+                deviceUiState = DeviceUiState(
+                    deviceDetails = it.toDeviceDetails(),
+                    isEntryValid = validateInput(it.toDeviceDetails())
+                )
+            }
         }
     }
 
     private fun validateInput(uiState: DeviceDetails = deviceUiState.deviceDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && ipAddress.isNotBlank() && macAddress.isNotBlank() && operatingSystem.isNotBlank() && cveNumber.isNotBlank()
+            name.isNotBlank() && ipAddress.isNotBlank() && macAddress.isNotBlank() &&
+                    operatingSystem.isNotBlank() && cveNumber.isNotBlank()
         }
     }
 
     fun updateUiState(deviceDetails: DeviceDetails) {
-        deviceUiState =
-            DeviceUiState(
-                deviceDetails = deviceDetails,
-                isEntryValid = validateInput(deviceDetails)
-            )
+        deviceUiState = DeviceUiState(
+            deviceDetails = deviceDetails,
+            isEntryValid = validateInput(deviceDetails)
+        )
     }
 
     suspend fun updateItem() {
-        if (validateInput(deviceUiState.deviceDetails)) {
-            deviceRepository.updateItem(deviceUiState.deviceDetails.toItem())
+        if (validateInput()) {
+            val updatedDevice = deviceUiState.deviceDetails.toDeviceFireStore().copy(deviceID = deviceID)
+            fireStoreRepository.updateDeviceInIncident(incidentID, updatedDevice)
         }
     }
 }
+
 
 fun Device.toDeviceUiState(isEntryValid: Boolean = false): DeviceUiState = DeviceUiState(
     deviceDetails = this.toDeviceDetails(),
     isEntryValid = isEntryValid
 )
 
-
-fun Device.toDeviceDetails(): DeviceDetails = DeviceDetails(
-    deviceID = deviceID,
+fun DeviceFireStore.toDeviceDetails(): DeviceDetails = DeviceDetails(
     name = name,
     ipAddress = ipAddress,
     macAddress = macAddress,
     operatingSystem = operatingSystem,
     cveNumber = cveNumber,
-    incidentID = incidentID
+)
+
+
+fun Device.toDeviceDetails(): DeviceDetails = DeviceDetails(
+    name = name,
+    ipAddress = ipAddress,
+    macAddress = macAddress,
+    operatingSystem = operatingSystem,
+    cveNumber = cveNumber,
+)
+
+fun DeviceDetails.toDeviceFireStore(): DeviceFireStore = DeviceFireStore(
+    name = name,
+    ipAddress = ipAddress,
+    macAddress = macAddress,
+    operatingSystem = operatingSystem,
+    cveNumber = cveNumber,
 )

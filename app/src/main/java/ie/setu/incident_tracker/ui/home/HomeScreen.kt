@@ -50,6 +50,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import ie.setu.incident_tracker.IncidentTrackerBottomBar
 import ie.setu.incident_tracker.IncidentTrackerTopAppBar
 import ie.setu.incident_tracker.R
+import ie.setu.incident_tracker.data.firebase.services.IncidentModel
 import ie.setu.incident_tracker.data.incident.Incident
 import ie.setu.incident_tracker.ui.AppViewModelProvider
 import ie.setu.incident_tracker.ui.navigation.NavigationDestination
@@ -63,8 +64,8 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     navigateToAddIncident: () -> Unit,
-    navigateToIncidentDetails: (Int) -> Unit,
-    navigateToEditIncident: (Int) -> Unit,
+    navigateToIncidentDetails: (String) -> Unit,
+    navigateToEditIncident: (String) -> Unit,
     navigateToSignInScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.factory)
@@ -76,6 +77,7 @@ fun HomeScreen(
     val isActiveSession = viewModel.isAuthenticated()
     val userEmail = if (isActiveSession) currentUser?.email else ""
     val userName = if (isActiveSession) currentUser?.displayName else ""
+
 
     Scaffold(
         topBar = {
@@ -135,11 +137,11 @@ fun HomeScreen(
                 .fillMaxSize()
         ) {
             HomeBody(
-                incidentList = homeUiState.incidentList,
-                onIncidentSelected = navigateToIncidentDetails,
-                onEditIncidentSelected = navigateToEditIncident,
+                incidentList = homeUiState.firestoreIncidentList,
+                onIncidentSelected = { incidentId -> navigateToIncidentDetails(incidentId) },
+                onEditIncidentSelected = { incidentId -> navigateToEditIncident(incidentId) },
                 filterText = homeUiState.filterByIncidentTitle,
-                onDeleteIncidentSelected = { viewModel.deleteIncident(it) },
+                onDeleteIncidentSelected = { viewModel.deleteIncident(it.toIncident(), it) },
                 onFilterTextChange = { viewModel.updateSearchBox(it) },
                 modifier = Modifier.fillMaxSize()
             )
@@ -149,10 +151,10 @@ fun HomeScreen(
 
 @Composable
 fun HomeBody(
-    incidentList: List<Incident>,
-    onIncidentSelected: (Int) -> Unit,
-    onEditIncidentSelected: (Int) -> Unit,
-    onDeleteIncidentSelected: (Incident) -> Unit,
+    incidentList: List<IncidentModel>,
+    onIncidentSelected: (String) -> Unit,
+    onEditIncidentSelected: (String) -> Unit,
+    onDeleteIncidentSelected: (IncidentModel) -> Unit,
     filterText: String,
     onFilterTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -192,14 +194,14 @@ fun HomeBody(
 
 @Composable
 fun ListIncidents(
-    incidentList: List<Incident>,
-    onIncidentSelected: (Int) -> Unit,
-    onEditIncidentSelected: (Int) -> Unit,
-    onDeleteIncidentSelected: (Incident) -> Unit,
+    incidentList: List<IncidentModel>,
+    onIncidentSelected: (String) -> Unit,
+    onEditIncidentSelected: (String) -> Unit,
+    onDeleteIncidentSelected: (IncidentModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
-        items(incidentList, key = { it.incidentID }) { incident ->
+        items(incidentList, key = { it._id }) { incident ->
             var isExpanded by remember { mutableStateOf(false) }
             var showDialog by remember { mutableStateOf(false) }
 
@@ -208,7 +210,7 @@ fun ListIncidents(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 ),
-                modifier = modifier.clickable { onIncidentSelected(incident.incidentID) },
+                modifier = modifier.clickable { onIncidentSelected(incident._id) },
                 shape = MaterialTheme.shapes.medium
             ) {
                 Column(
@@ -268,7 +270,7 @@ fun ListIncidents(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 IconButton(
-                                    onClick = { onEditIncidentSelected(incident.incidentID) }
+                                    onClick = { onEditIncidentSelected(incident._id) }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Edit,

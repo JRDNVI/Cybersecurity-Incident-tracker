@@ -15,5 +15,6 @@ data class Incident (
     val location: String,
     val longitude: Float,
     val latitude: Float,
-    val status: Boolean
+    val status: Boolean,
+    val email: String = ""
 )
