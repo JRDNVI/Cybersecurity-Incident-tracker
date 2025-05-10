@@ -1,11 +1,20 @@
 package ie.setu.incident_tracker.data
 
 import android.content.Context
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.CredentialOption
+import androidx.credentials.CustomCredential
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.initialize
+import ie.setu.incident_tracker.R
 import ie.setu.incident_tracker.data.device.DeviceRepository
 import ie.setu.incident_tracker.data.device.OfflineDeviceRepository
 import ie.setu.incident_tracker.data.firebase.auth.AuthRepository
@@ -22,6 +31,8 @@ interface AppContainer {
     val deviceRepository : DeviceRepository
     val userRepository : UserRepository
     val authRepository: AuthService
+    val credentialManager: CredentialManager
+    val credentialRequest: GetCredentialRequest
     val fireStoreRepository: FireStoreService
 }
 
@@ -47,5 +58,22 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
     override val fireStoreRepository: FireStoreService by lazy {
         FireStoreRepository(firestore)
+    }
+
+    override val credentialManager: CredentialManager by lazy {
+        CredentialManager.create(context)
+    }
+
+    private val googleIdOption: GetGoogleIdOption by lazy {
+        GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(context.getString(R.string.web_client_id))
+            .build()
+    }
+
+    override val credentialRequest: GetCredentialRequest by lazy {
+        GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
     }
 }

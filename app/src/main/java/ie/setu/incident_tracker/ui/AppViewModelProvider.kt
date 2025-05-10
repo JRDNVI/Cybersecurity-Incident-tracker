@@ -1,4 +1,5 @@
 package ie.setu.incident_tracker.ui
+
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -21,81 +22,93 @@ object AppViewModelProvider {
     val factory = viewModelFactory {
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             HomeViewModel(
-                IncidentTrackerApplication().container.incidentRepository,
-                IncidentTrackerApplication().container.authRepository,
-                IncidentTrackerApplication().container.fireStoreRepository
+                application.container.incidentRepository,
+                application.container.authRepository,
+                application.container.fireStoreRepository
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             LoginViewModel(
-                IncidentTrackerApplication().container.authRepository
+                application.container.authRepository,
+                application.container.credentialManager,
+                application.container.credentialRequest
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             RegisterViewModel(
                 auth = FirebaseAuth.getInstance(),
-                authService = IncidentTrackerApplication().container.authRepository
+                authService = application.container.authRepository
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             AddIncidentViewModel(
-                IncidentTrackerApplication().container.incidentRepository,
-                IncidentTrackerApplication().container.authRepository,
-                IncidentTrackerApplication().container.fireStoreRepository
+                application.container.incidentRepository,
+                application.container.authRepository,
+                application.container.fireStoreRepository
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             SignInViewModel(
-                IncidentTrackerApplication().container.userRepository
+                application.container.userRepository
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             SignUpViewModel(
-                IncidentTrackerApplication().container.userRepository
+                application.container.userRepository
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             AddDeviceViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.deviceRepository,
-                IncidentTrackerApplication().container.authRepository,
-                IncidentTrackerApplication().container.fireStoreRepository
+                application.container.deviceRepository,
+                application.container.authRepository,
+                application.container.fireStoreRepository
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             ViewIncidentDetailsViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.fireStoreRepository,
-                IncidentTrackerApplication().container.authRepository
-
+                application.container.fireStoreRepository,
+                application.container.authRepository
             )
         }
 
         initializer {
+            val application = this.IncidentTrackerApplication()
             EditDeviceViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.fireStoreRepository,
-                IncidentTrackerApplication().container.authRepository,
+                application.container.fireStoreRepository,
+                application.container.authRepository
             )
         }
+
         initializer {
+            val application = this.IncidentTrackerApplication()
             EditIncidentViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.incidentRepository,
-                IncidentTrackerApplication().container.authRepository,
-                IncidentTrackerApplication().container.fireStoreRepository
+                application.container.incidentRepository,
+                application.container.authRepository,
+                application.container.fireStoreRepository
             )
         }
     }
 }
 
-fun CreationExtras.IncidentTrackerApplication() : IncidentTrackerApplication =
+fun CreationExtras.IncidentTrackerApplication(): IncidentTrackerApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as IncidentTrackerApplication)
