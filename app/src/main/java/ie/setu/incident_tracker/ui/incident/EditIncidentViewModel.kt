@@ -28,14 +28,14 @@ class EditIncidentViewModel(
 
     private val incidentID: String = checkNotNull(savedStateHandle["incidentID"])
     private val userEmail = authRepository.email!!
-    private var fireStoreDocumentId: String? = null // <-- store Firestore _id
+    private var fireStoreDocumentId: String? = null
 
     init {
         viewModelScope.launch {
             fireStoreRepository.get(userEmail, incidentID)?.let { incidentFS ->
                 fireStoreDocumentId = incidentFS._id
 
-                // ✅ Update the UI state with Firestore data
+
                 incidentUiState = IncidentUiState(
                     incidentDetails = incidentFS.toIncidentDetails(),
                     isEntryValid = true
@@ -62,13 +62,10 @@ class EditIncidentViewModel(
         if (!validateInput(incidentUiState.incidentDetails)) return
 
         val updatedLocal = incidentUiState.incidentDetails.toItem().copy(email = userEmail)
-
-        // Room DB
         incidentRepository.updateItem(updatedLocal)
 
-        // Firestore
         val firestoreIncident = updatedLocal.toFireStoreModel().copy(
-            _id = fireStoreDocumentId ?: "" // set _id to match Firestore document
+            _id = fireStoreDocumentId ?: ""
         )
         fireStoreRepository.update(userEmail, firestoreIncident)
     }

@@ -10,6 +10,7 @@ import ie.setu.incident_tracker.data.rules.Constants.INCIDENT_COLLECTION
 import ie.setu.incident_tracker.data.rules.Constants.USER_EMAIL
 import kotlinx.coroutines.tasks.await
 import com.google.firebase.firestore.dataObjects
+import ie.setu.incident_tracker.data.firebase.model.DeviceFireStore
 import java.util.Date
 
 class FireStoreRepository(
@@ -52,5 +53,41 @@ class FireStoreRepository(
             .document(incidentId)
             .delete()
             .await()
+    }
+
+    override suspend fun addDeviceToIncident(incidentId: String, device: DeviceFireStore) {
+        val incidentRef = firestore.collection(INCIDENT_COLLECTION).document(incidentId)
+        val snapshot = incidentRef.get().await()
+        val currentIncident = snapshot.toObject(IncidentFireStore::class.java)
+
+        currentIncident?.let {
+            val updatedDevices = it.devices + device
+            incidentRef.update("devices", updatedDevices).await()
+
+        }
+    }
+
+    override suspend fun deleteDeviceFromIncident(incidentId: String, deviceId: String) {
+        val incidentRef = firestore.collection(INCIDENT_COLLECTION).document(incidentId)
+        val snapshot = incidentRef.get().await()
+        val currentIncident = snapshot.toObject(IncidentFireStore::class.java)
+
+        currentIncident?.let {
+            val updatedDevices = it.devices.filterNot { device -> device.deviceID == deviceId }
+            incidentRef.update("devices", updatedDevices).await()
+        }
+    }
+
+    override suspend fun updateDeviceInIncident(incidentId: String, updatedDevice: DeviceFireStore) {
+        val incidentRef = firestore.collection(INCIDENT_COLLECTION).document(incidentId)
+        val snapshot = incidentRef.get().await()
+        val currentIncident = snapshot.toObject(IncidentFireStore::class.java)
+
+        currentIncident?.let {
+            val newDeviceList = it.devices.map { device ->
+                if (device.deviceID == updatedDevice.deviceID) updatedDevice else device
+            }
+            incidentRef.update("devices", newDeviceList).await()
+        }
     }
 }

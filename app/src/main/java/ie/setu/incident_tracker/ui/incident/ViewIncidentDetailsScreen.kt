@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -63,14 +64,19 @@ data object ViewIncidentDetailsDestination : NavigationDestination {
 fun ViewIncidentDetailsScreen(
     navigateBack: () -> Unit,
     navigateToHome: () -> Unit,
-    navigateToAddDevice: (Int) -> Unit,
-    navigateToEditDevice: (Int) -> Unit,
+    navigateToAddDevice: (String) -> Unit,
+    navigateToEditDevice: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
     val viewIncidentUiState = viewModel.incidentDetailsUiState.collectAsState()
     val scope = rememberCoroutineScope()
     Log.d("ViewIncidentDetailsScreen", "Incident ID: $viewIncidentUiState")
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshIncident()
+    }
+
 
     Scaffold(
         topBar = {
@@ -85,7 +91,7 @@ fun ViewIncidentDetailsScreen(
             IncidentTrackerBottomBar(
                 navigateToHome = navigateToHome,
                 additionalIcons = listOf(
-                    Icons.Default.Add to { navigateToAddDevice(viewIncidentUiState.value.incidentDetails.incidentID) }
+                    Icons.Default.Add to { navigateToAddDevice(viewIncidentUiState.value.incidentID) }
                 )
             )
         }
@@ -110,7 +116,7 @@ fun ViewIncidentDetailsScreen(
 @Composable
 fun IncidentDetailsBody(
     incidentDetailsUiState: IncidentDetailsUiState,
-    selectedDevice: (Int) -> Unit,
+    selectedDevice: (String, String) -> Unit,
     scope: CoroutineScope,
     viewModel: ViewIncidentDetailsViewModel,
     modifier: Modifier = Modifier
@@ -198,13 +204,16 @@ fun IncidentDetailsBody(
         ) {
             ListDevices(
                 deviceList = incidentDetailsUiState.deviceList,
-                selectedDevice = selectedDevice,
+                selectedDevice = { deviceId ->
+                    selectedDevice(incidentDetailsUiState.incidentID, deviceId)
+                },
                 onFilterTextChange = { viewModel.updateFilterText(it) },
                 filterText = incidentDetailsUiState.filterText,
                 scope = scope,
                 viewModel = viewModel,
                 modifier = Modifier.padding(16.dp)
             )
+
         }
     }
 }
@@ -213,7 +222,7 @@ fun IncidentDetailsBody(
 @Composable
 fun ListDevices(
     deviceList: List<DeviceFireStore>,
-    selectedDevice: (Int) -> Unit,
+    selectedDevice: (String) -> Unit,
     onFilterTextChange: (String) -> Unit,
     filterText: String,
     scope: CoroutineScope,
@@ -270,7 +279,7 @@ fun ListDevices(
 @Composable
 fun DeviceCard(
     device: DeviceFireStore,
-    selectedDevice: (Int) -> Unit,
+    selectedDevice: (String) -> Unit,
     scope: CoroutineScope,
     modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel
@@ -322,14 +331,14 @@ fun DeviceCard(
             }
 
             Row {
-//                IconButton(onClick = { selectedDevice(device.deviceID) }
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.Edit,
-//                        contentDescription = stringResource(R.string.edit_device_icon),
-//                        tint = MaterialTheme.colorScheme.primary
-//                    )
-//                }
+                IconButton(onClick = { selectedDevice(device.deviceID) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.edit_device_icon),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
                 IconButton(onClick = { showDialog = true }
                 ) {
                     Icon(
@@ -352,7 +361,8 @@ fun DeviceCard(
                     onClick = {
                         showDialog = false
                         scope.launch {
-                           // viewModel.deleteDevice(device)
+                           viewModel.deleteDevice(device.deviceID)
+
                         }
                     }
                 ) {

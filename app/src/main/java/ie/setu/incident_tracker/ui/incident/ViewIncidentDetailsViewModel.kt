@@ -36,14 +36,19 @@ class ViewIncidentDetailsViewModel(
     init {
         viewModelScope.launch {
             try {
+                Log.d("View", incidentID)
                 val firestoreIncident = fireStoreRepository.get(userEmail, incidentID)
+                Log.d("Object", firestoreIncident.toString())
                 firestoreIncident?.let {
                     _uiState.value = IncidentDetailsUiState(
                         incidentDetails = it.toIncident().toIncidentDetails(),
-                        deviceList = it.devices, // <- from Firestore embedded list
-                        filterText = _filterText.value
+                        deviceList = it.devices,
+                        filterText = _filterText.value,
+                        incidentID = incidentID
+
                     )
                 }
+
             } catch (e: Exception) {
                 Log.e("ViewIncidentDetails", "Error fetching Firestore incident", e)
             }
@@ -60,6 +65,34 @@ class ViewIncidentDetailsViewModel(
         )
     }
 
+    fun refreshIncident() {
+        viewModelScope.launch {
+            try {
+                val firestoreIncident = fireStoreRepository.get(userEmail, incidentID)
+                firestoreIncident?.let {
+                    _uiState.value = _uiState.value.copy(
+                        deviceList = it.devices
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("RefreshIncident", "Error refreshing", e)
+            }
+        }
+    }
+
+
+    fun deleteDevice(deviceId: String) {
+        viewModelScope.launch {
+            fireStoreRepository.deleteDeviceFromIncident(incidentID, deviceId)
+            val firestoreIncident = fireStoreRepository.get(userEmail, incidentID)
+            firestoreIncident?.let {
+                _uiState.value = _uiState.value.copy(
+                    deviceList = it.devices
+                )
+            }
+        }
+    }
+
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
@@ -68,6 +101,7 @@ class ViewIncidentDetailsViewModel(
 
 data class IncidentDetailsUiState(
     val incidentDetails: IncidentDetails = IncidentDetails(),
+    val incidentID: String = "",
     val deviceList: List<DeviceFireStore> = listOf(),
     val filterText: String = ""
 )

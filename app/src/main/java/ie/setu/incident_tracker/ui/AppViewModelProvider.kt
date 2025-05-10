@@ -64,7 +64,9 @@ object AppViewModelProvider {
         initializer {
             AddDeviceViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.deviceRepository
+                IncidentTrackerApplication().container.deviceRepository,
+                IncidentTrackerApplication().container.authRepository,
+                IncidentTrackerApplication().container.fireStoreRepository
             )
         }
 
@@ -80,7 +82,8 @@ object AppViewModelProvider {
         initializer {
             EditDeviceViewModel(
                 this.createSavedStateHandle(),
-                IncidentTrackerApplication().container.deviceRepository
+                IncidentTrackerApplication().container.fireStoreRepository,
+                IncidentTrackerApplication().container.authRepository,
             )
         }
         initializer {

@@ -1,7 +1,7 @@
 package ie.setu.incident_tracker.data.firebase.services
 
+import ie.setu.incident_tracker.data.firebase.model.DeviceFireStore
 import ie.setu.incident_tracker.data.firebase.model.IncidentFireStore
-import ie.setu.incident_tracker.data.incident.Incident
 import kotlinx.coroutines.flow.Flow
 
 typealias IncidentModel = IncidentFireStore
@@ -13,4 +13,7 @@ interface FireStoreService {
     suspend fun insert(email: String, incident: IncidentModel): String
     suspend fun update(email: String, incident: IncidentModel)
     suspend fun delete(email: String, incidentId: String)
+    suspend fun addDeviceToIncident(incidentId: String, device: DeviceFireStore)
+    suspend fun deleteDeviceFromIncident(incidentId: String, deviceId: String)
+    suspend fun updateDeviceInIncident(incidentId: String, updatedDevice: DeviceFireStore)
 }

@@ -1,16 +1,13 @@
 package ie.setu.incident_tracker.data.firebase.model
 
-import androidx.room.Entity
-import com.google.firebase.firestore.DocumentId
+import java.util.UUID
 
-@Entity
 data class DeviceFireStore(
- @DocumentId val _id: String = "",
-    val name: String = "",
-    val ipAddress: String = "",
-    val macAddress: String = "",
-    val operatingSystem: String = "",
-    val cveNumber: String = "",
-    val incidentID: String = "",
+   val deviceID: String = UUID.randomUUID().toString(),
+   val name: String = "",
+   val ipAddress: String = "",
+   val macAddress: String = "",
+   val operatingSystem: String = "",
+   val cveNumber: String = ""
 )
 

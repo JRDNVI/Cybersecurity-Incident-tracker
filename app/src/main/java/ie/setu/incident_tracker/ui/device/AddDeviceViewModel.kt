@@ -1,24 +1,44 @@
 package ie.setu.incident_tracker.ui.device
 
-import android.view.View
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import ie.setu.incident_tracker.data.device.Device
+import androidx.lifecycle.viewModelScope
 import ie.setu.incident_tracker.data.device.DeviceRepository
-import ie.setu.incident_tracker.data.user.UserRepository
+import ie.setu.incident_tracker.data.firebase.model.DeviceFireStore
+import ie.setu.incident_tracker.data.firebase.services.AuthService
+import ie.setu.incident_tracker.data.firebase.services.FireStoreService
+import kotlinx.coroutines.launch
 
 class AddDeviceViewModel(
     savedStateHandle: SavedStateHandle,
-    private val deviceRepository: DeviceRepository
+    private val deviceRepository: DeviceRepository,
+    private val authRepository: AuthService,
+    private val fireStoreRepository: FireStoreService
 ) : ViewModel() {
 
-    private val incidentID: Int = checkNotNull(savedStateHandle[AddDeviceDestination.IncidentIDArg])
+    private val incidentID: String = checkNotNull(savedStateHandle[AddDeviceDestination.IncidentIDArg])
+    private val userEmail = authRepository.email!!
+
 
     var deviceUiState by mutableStateOf(DeviceUiState())
         private set
+
+    init {
+        viewModelScope.launch {
+            try {
+                Log.d("Email:", incidentID)
+                val firestoreIncident = fireStoreRepository.get(userEmail, incidentID)
+                Log.d("AddDevice:", firestoreIncident.toString())
+                Log.d("AddDeviceID", incidentID)
+            } catch (e : Exception) {
+                Log.e("ViewIncidentDetails", "Error fetching Firestore incident", e)
+            }
+        }
+    }
 
     private fun validateInput(uiState: DeviceDetails = deviceUiState.deviceDetails): Boolean {
         return with(uiState) {
@@ -29,15 +49,21 @@ class AddDeviceViewModel(
     fun updateUiState(deviceDetails: DeviceDetails) {
         deviceUiState =
             DeviceUiState(
-                deviceDetails = deviceDetails.copy(incidentID = incidentID),
-                isEntryValid = validateInput(deviceDetails))
+                deviceDetails = deviceDetails.copy(),
+                isEntryValid = validateInput(deviceDetails)
+            )
     }
 
     suspend fun saveItem() {
         if (validateInput()) {
-            deviceRepository.insertItem(deviceUiState.deviceDetails.toItem())
+            Log.d("ID:", incidentID)
+            fireStoreRepository.addDeviceToIncident(
+                incidentID,
+                deviceUiState.deviceDetails.toItem()
+            )
         }
     }
+
 }
 
 data class DeviceUiState(
@@ -46,21 +72,17 @@ data class DeviceUiState(
 )
 
 data class DeviceDetails(
-    val deviceID: Int = 0,
     val name: String = "",
     val ipAddress: String = "",
     val macAddress: String = "",
     val operatingSystem: String = "",
     val cveNumber: String = "",
-    val incidentID: Int = 0
 )
 
-fun DeviceDetails.toItem(): Device = Device(
-    deviceID = deviceID,
+fun DeviceDetails.toItem(): DeviceFireStore = DeviceFireStore(
     name = name,
     ipAddress = ipAddress,
     macAddress = macAddress,
     operatingSystem = operatingSystem,
     cveNumber = cveNumber,
-    incidentID = incidentID
 )

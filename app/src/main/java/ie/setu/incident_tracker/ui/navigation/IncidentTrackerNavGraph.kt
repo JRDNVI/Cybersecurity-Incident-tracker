@@ -89,22 +89,36 @@ fun IncidentTrackerNavHost(
             ViewIncidentDetailsScreen(
                 navigateBack = { navController.popBackStack() },
                 navigateToHome = { navController.navigate(HomeDestination.route) },
-                navigateToAddDevice = { navController.navigate("${AddDeviceDestination.route}/${it}") },
-                navigateToEditDevice = { navController.navigate("${EditDeviceDestination.route}/${it}") }
+                navigateToAddDevice = { incidentId ->
+                    navController.navigate("${AddDeviceDestination.route}/$incidentId")
+                },
+                navigateToEditDevice = { incidentId, deviceId ->
+                    navController.navigate("edit_device/$incidentId/$deviceId")
+                }
             )
         }
 
+
         composable(
             route = EditDeviceDestination.routeWithArgs,
-            arguments = listOf(navArgument(EditDeviceDestination.deivceIdArg) {
-                type = NavType.IntType
-            })
-        ) {
+            arguments = listOf(
+                navArgument(EditDeviceDestination.incidentIdArg) { type = NavType.StringType },
+                navArgument(EditDeviceDestination.deivceIdArg) { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val incidentId = backStackEntry.arguments?.getString(EditDeviceDestination.incidentIdArg)
+            val deviceId = backStackEntry.arguments?.getString(EditDeviceDestination.deivceIdArg)
+
+            requireNotNull(incidentId)
+            requireNotNull(deviceId)
+
             EditDeviceScreen(
-                navigateBack = { navController.navigate(HomeDestination.route) },
+
+                navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )
         }
+
 
         composable(
             route = EditIncidentDestination.routeWithArgs,
@@ -122,7 +136,7 @@ fun IncidentTrackerNavHost(
         composable(
             route = AddDeviceDestination.routeWithArgs,
             arguments = listOf(navArgument(AddDeviceDestination.IncidentIDArg) {
-                type = NavType.IntType
+                type = NavType.StringType
             })
         ) {
             AddDeviceScreen(

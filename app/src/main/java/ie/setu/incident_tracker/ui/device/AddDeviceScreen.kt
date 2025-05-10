@@ -77,6 +77,7 @@ fun AddDeviceScreen(
                 onSaveClick = {
                     scope.launch {
                         viewModel.saveItem()
+                        navigateBack()
                     }
                 },
                 modifier = Modifier
@@ -144,6 +145,7 @@ fun AddDeviceScreen(
             Button(
                 onClick = onSaveClick,
                 enabled = deviceUiState.isEntryValid,
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
