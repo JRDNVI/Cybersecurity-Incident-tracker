@@ -31,6 +31,7 @@ object EditDeviceDestination : NavigationDestination {
 fun EditDeviceScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditDeviceViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -46,7 +47,8 @@ fun EditDeviceScreen(
         },
         bottomBar = {
             IncidentTrackerBottomBar(
-                navigateToHome = { navigateBack() }
+                navigateToHome = { navigateBack() },
+                navigateToProfile = { navigateToProfile() }
             )
         }
     ) { innerPadding ->

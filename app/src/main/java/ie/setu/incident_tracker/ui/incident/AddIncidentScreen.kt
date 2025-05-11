@@ -53,6 +53,7 @@ fun AddIncidentScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     navigateHome: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -69,7 +70,10 @@ fun AddIncidentScreen(
         },
 
         bottomBar = {
-            IncidentTrackerBottomBar(navigateToHome = navigateHome)
+            IncidentTrackerBottomBar(
+                navigateToHome = navigateHome,
+                navigateToProfile = { navigateToProfile() }
+            )
         }
     ) { innerPadding ->
         AddIncidentBody(

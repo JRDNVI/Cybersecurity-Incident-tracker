@@ -27,6 +27,7 @@ data object EditIncidentDestination : NavigationDestination {
 fun EditIncidentScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -40,7 +41,10 @@ fun EditIncidentScreen(
             )
         },
         bottomBar = {
-            IncidentTrackerBottomBar(navigateToHome = navigateBack)
+            IncidentTrackerBottomBar(
+                navigateToHome = navigateBack,
+                navigateToProfile = { navigateToProfile() },
+            )
         }
     ) { innerPadding ->
         AddIncidentBody(

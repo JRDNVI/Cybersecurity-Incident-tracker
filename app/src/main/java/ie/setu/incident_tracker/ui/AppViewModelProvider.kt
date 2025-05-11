@@ -17,6 +17,7 @@ import ie.setu.incident_tracker.ui.device.EditDeviceViewModel
 import ie.setu.incident_tracker.ui.incident.EditIncidentViewModel
 import ie.setu.incident_tracker.ui.auth.login.LoginViewModel
 import ie.setu.incident_tracker.ui.auth.register.RegisterViewModel
+import ie.setu.incident_tracker.ui.profile.ProfileViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
@@ -105,6 +106,12 @@ object AppViewModelProvider {
                 application.container.incidentRepository,
                 application.container.authRepository,
                 application.container.fireStoreRepository
+            )
+        }
+        initializer {
+            val application = this.IncidentTrackerApplication()
+            ProfileViewModel(
+                application.container.authRepository
             )
         }
     }

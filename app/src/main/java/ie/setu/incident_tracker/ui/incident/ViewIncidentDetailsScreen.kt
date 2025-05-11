@@ -66,6 +66,7 @@ fun ViewIncidentDetailsScreen(
     navigateToHome: () -> Unit,
     navigateToAddDevice: (String) -> Unit,
     navigateToEditDevice: (String, String) -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -90,6 +91,7 @@ fun ViewIncidentDetailsScreen(
         bottomBar = {
             IncidentTrackerBottomBar(
                 navigateToHome = navigateToHome,
+                navigateToProfile = { navigateToProfile()},
                 additionalIcons = listOf(
                     Icons.Default.Add to { navigateToAddDevice(viewIncidentUiState.value.incidentID) }
                 )

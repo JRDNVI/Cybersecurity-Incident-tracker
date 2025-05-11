@@ -19,4 +19,5 @@
     <string name="register">Register Screen</string>
     <string name="web_client_id">608715962863-vqskp954nrc16evs3upc3qmnjlq5kejc.apps.googleusercontent.com</string>
     <string name="no_account_register">Register</string>
+    <string name="profile_screen">Profile Screen</string>
 </resources>
