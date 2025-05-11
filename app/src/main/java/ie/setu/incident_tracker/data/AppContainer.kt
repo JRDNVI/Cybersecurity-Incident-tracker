@@ -25,8 +25,13 @@ import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import ie.setu.incident_tracker.data.firebase.storage.StorageRepository
 import ie.setu.incident_tracker.data.incident.IncidentRepository
 import ie.setu.incident_tracker.data.incident.OfflineIncidentRepository
+import ie.setu.incident_tracker.data.retrofit.CveRepository
+import ie.setu.incident_tracker.data.retrofit.CveService
+import ie.setu.incident_tracker.data.retrofit.ServiceEndpoints
 import ie.setu.incident_tracker.data.user.OfflineUserRepository
 import ie.setu.incident_tracker.data.user.UserRepository
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 interface AppContainer {
     val incidentRepository : IncidentRepository
@@ -37,6 +42,7 @@ interface AppContainer {
     val credentialRequest: GetCredentialRequest
     val fireStoreRepository: FireStoreService
     val storageRepository: StorageRepository
+    val cveRepository : CveRepository
 
 }
 
@@ -44,6 +50,18 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val firebaseStorage = FirebaseStorage.getInstance()
+
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(ServiceEndpoints.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private val cveService: CveService by lazy {
+        retrofit.create(CveService::class.java)
+    }
+
 
     override val incidentRepository: IncidentRepository by lazy {
         OfflineIncidentRepository(IncidentDatabase.getDatabase(context).incidentDao())
@@ -88,10 +106,12 @@ class AppDataContainer(private val context: Context) : AppContainer {
             .build()
     }
 
-
-
     override val storageRepository: StorageRepository by lazy {
         StorageRepository(firebaseStorage)
+    }
+
+    override val cveRepository: CveRepository by lazy {
+        CveRepository(cveService)
     }
 
 }

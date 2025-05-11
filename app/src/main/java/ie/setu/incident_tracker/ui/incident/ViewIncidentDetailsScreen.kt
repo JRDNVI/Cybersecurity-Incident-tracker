@@ -2,6 +2,7 @@ package ie.setu.incident_tracker.ui.incident
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,6 +68,7 @@ fun ViewIncidentDetailsScreen(
     navigateToAddDevice: (String) -> Unit,
     navigateToEditDevice: (String, String) -> Unit,
     navigateToProfile: () -> Unit,
+    navigateToCveDetail: (String) -> Unit,
     onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel = viewModel(factory = AppViewModelProvider.factory)
@@ -109,6 +111,7 @@ fun ViewIncidentDetailsScreen(
                 incidentDetailsUiState = viewIncidentUiState.value,
                 selectedDevice = navigateToEditDevice,
                 scope = scope,
+                navigateToCveDetail = navigateToCveDetail,
                 viewModel = viewModel,
                 modifier = modifier
                     .fillMaxSize()
@@ -122,6 +125,7 @@ fun IncidentDetailsBody(
     incidentDetailsUiState: IncidentDetailsUiState,
     selectedDevice: (String, String) -> Unit,
     scope: CoroutineScope,
+    navigateToCveDetail: (String) -> Unit,
     viewModel: ViewIncidentDetailsViewModel,
     modifier: Modifier = Modifier
 
@@ -214,6 +218,7 @@ fun IncidentDetailsBody(
                 onFilterTextChange = { viewModel.updateFilterText(it) },
                 filterText = incidentDetailsUiState.filterText,
                 scope = scope,
+                navigateToCveDetail = navigateToCveDetail,
                 viewModel = viewModel,
                 modifier = Modifier.padding(16.dp)
             )
@@ -230,6 +235,7 @@ fun ListDevices(
     onFilterTextChange: (String) -> Unit,
     filterText: String,
     scope: CoroutineScope,
+    navigateToCveDetail: (String) -> Unit,
     viewModel: ViewIncidentDetailsViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -272,6 +278,7 @@ fun ListDevices(
                 device = device,
                 selectedDevice = selectedDevice,
                 scope = scope,
+                navigateToCveDetail = navigateToCveDetail,
                 modifier = modifier,
                 viewModel = viewModel
             )
@@ -286,7 +293,8 @@ fun DeviceCard(
     selectedDevice: (String) -> Unit,
     scope: CoroutineScope,
     modifier: Modifier = Modifier,
-    viewModel: ViewIncidentDetailsViewModel
+    viewModel: ViewIncidentDetailsViewModel,
+    navigateToCveDetail: (String) -> Unit,
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
@@ -329,8 +337,14 @@ fun DeviceCard(
                 )
                 Text(
                     text = "CVE: ${device.cveNumber}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary),
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .clickable {
+                            if (device.cveNumber.isNotBlank()) {
+                                navigateToCveDetail(device.cveNumber)
+                            }
+                        }
                 )
             }
 

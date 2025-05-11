@@ -17,7 +17,9 @@ hiltAndroidCompiler = "2.52"
 hiltNavigationCompose = "1.2.0"
 composeCompiler = "1.5.11"
 coilCompose = "2.6.0"
-
+converterGson = "2.9.0"
+gson = "2.10.1"
+retrofit = "2.9.0"
 ksp = "2.0.20-1.0.25"
 lifecycleCompiler = "2.8.7"
 firebaseFirestore = "25.1.4"
@@ -51,6 +53,9 @@ androidx-lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"}
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

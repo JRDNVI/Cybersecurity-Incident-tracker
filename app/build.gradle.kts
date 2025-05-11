@@ -85,7 +85,9 @@ dependencies {
 
     implementation(libs.androidx.material)
 
-
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.gson)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

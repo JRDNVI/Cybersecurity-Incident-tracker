@@ -12,6 +12,8 @@ import ie.setu.incident_tracker.ui.auth.login.LoginScreen
 import ie.setu.incident_tracker.ui.auth.login.LoginScreenDestination
 import ie.setu.incident_tracker.ui.auth.register.RegisterScreen
 import ie.setu.incident_tracker.ui.auth.register.RegisterScreenDestination
+import ie.setu.incident_tracker.ui.cve.CveDetailsScreen
+import ie.setu.incident_tracker.ui.cve.cveDetailsDestination
 import ie.setu.incident_tracker.ui.device.AddDeviceDestination
 import ie.setu.incident_tracker.ui.device.AddDeviceScreen
 import ie.setu.incident_tracker.ui.device.EditDeviceDestination
@@ -99,6 +101,9 @@ fun IncidentTrackerNavHost(
                     navController.navigate("edit_device/$incidentId/$deviceId")
                 },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                navigateToCveDetail = { cveId ->
+                    navController.navigate("${cveDetailsDestination.route}/$cveId")
+                },
                 onToggleDarkMode = onToggleDarkMode
             )
         }
@@ -140,7 +145,6 @@ fun IncidentTrackerNavHost(
             )
         }
 
-
         composable(
             route = AddDeviceDestination.routeWithArgs,
             arguments = listOf(navArgument(AddDeviceDestination.IncidentIDArg) {
@@ -154,5 +158,18 @@ fun IncidentTrackerNavHost(
                 onToggleDarkMode = onToggleDarkMode
             )
         }
+        composable(
+            route = cveDetailsDestination.routeWithArgs,
+            arguments = listOf(navArgument(cveDetailsDestination.cveIDArg) {
+                type = NavType.StringType
+            })
+            ) {
+                CveDetailsScreen(
+                    navigateBack = { navController.popBackStack() },
+                    navigateToHome = { navController.navigate(HomeDestination.route) },
+                    navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                    onToggleDarkMode = onToggleDarkMode
+                )
+            }
     }
 }

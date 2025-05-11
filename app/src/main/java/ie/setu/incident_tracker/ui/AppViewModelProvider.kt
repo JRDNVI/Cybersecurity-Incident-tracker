@@ -17,6 +17,8 @@ import ie.setu.incident_tracker.ui.device.EditDeviceViewModel
 import ie.setu.incident_tracker.ui.incident.EditIncidentViewModel
 import ie.setu.incident_tracker.ui.auth.login.LoginViewModel
 import ie.setu.incident_tracker.ui.auth.register.RegisterViewModel
+import ie.setu.incident_tracker.ui.cve.CveDetailsScreen
+import ie.setu.incident_tracker.ui.cve.CveDetailsViewModel
 import ie.setu.incident_tracker.ui.profile.ProfileViewModel
 
 object AppViewModelProvider {
@@ -99,6 +101,13 @@ object AppViewModelProvider {
             ProfileViewModel(
                 application.container.authRepository,
                 application.container.fireStoreRepository
+            )
+        }
+        initializer {
+            val application = this.IncidentTrackerApplication()
+            CveDetailsViewModel(
+                this.createSavedStateHandle(),
+                application.container.cveRepository
             )
         }
     }

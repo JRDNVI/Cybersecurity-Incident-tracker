@@ -13,8 +13,10 @@ The **Cybersecurity Incident Tracker** is an Android application designed to log
 - Adding, viewing, editing, and deleting cybersecurity incidents
 - Device management for each incident
 - Swipe-to-edit/delete gesture support
-- Search and filter functionality
+- Search/filter/sorting functionality
 - Dark Mode
+- using third party API to return CVE details
+- list All Incidents
 
 ### Third-Party / Google APIs:
 - **Firebase Authentication**: Used for secure user sign-in and account management.
@@ -22,6 +24,7 @@ The **Cybersecurity Incident Tracker** is an Android application designed to log
 - **Firebase Firestore**: For NoSQL data storage.
 - **Firebase Storage** : To store user profile images.
 - **Coil**: image loading and caching library for Compose.
+- **CVE API**: Used with retrofit to return details about a devices CVE number (e.g., BASE_URL + {cve_id})
 
 ---
 
