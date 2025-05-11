@@ -1,5 +1,6 @@
 package ie.setu.incident_tracker.data.firebase.services
 
+import android.net.Uri
 import ie.setu.incident_tracker.data.firebase.model.DeviceFireStore
 import ie.setu.incident_tracker.data.firebase.model.IncidentFireStore
 import kotlinx.coroutines.flow.Flow
@@ -16,4 +17,5 @@ interface FireStoreService {
     suspend fun addDeviceToIncident(incidentId: String, device: DeviceFireStore)
     suspend fun deleteDeviceFromIncident(incidentId: String, deviceId: String)
     suspend fun updateDeviceInIncident(incidentId: String, updatedDevice: DeviceFireStore)
+    suspend fun updatePhotoUris(email: String, uri: Uri)
 }

@@ -14,6 +14,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.initialize
+import com.google.firebase.storage.FirebaseStorage
 import ie.setu.incident_tracker.R
 import ie.setu.incident_tracker.data.device.DeviceRepository
 import ie.setu.incident_tracker.data.device.OfflineDeviceRepository
@@ -21,6 +22,7 @@ import ie.setu.incident_tracker.data.firebase.auth.AuthRepository
 import ie.setu.incident_tracker.data.firebase.database.FireStoreRepository
 import ie.setu.incident_tracker.data.firebase.services.AuthService
 import ie.setu.incident_tracker.data.firebase.services.FireStoreService
+import ie.setu.incident_tracker.data.firebase.storage.StorageRepository
 import ie.setu.incident_tracker.data.incident.IncidentRepository
 import ie.setu.incident_tracker.data.incident.OfflineIncidentRepository
 import ie.setu.incident_tracker.data.user.OfflineUserRepository
@@ -34,11 +36,14 @@ interface AppContainer {
     val credentialManager: CredentialManager
     val credentialRequest: GetCredentialRequest
     val fireStoreRepository: FireStoreService
+    val storageRepository: StorageRepository
+
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
 
     private val firestore = FirebaseFirestore.getInstance()
+    private val firebaseStorage = FirebaseStorage.getInstance()
 
     override val incidentRepository: IncidentRepository by lazy {
         OfflineIncidentRepository(IncidentDatabase.getDatabase(context).incidentDao())
@@ -53,7 +58,10 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 
     override val authRepository: AuthService by lazy {
-        AuthRepository(FirebaseAuth.getInstance())
+        AuthRepository(
+            firebaseAuth = FirebaseAuth.getInstance(),
+            storageService = storageRepository
+        )
     }
 
     override val fireStoreRepository: FireStoreService by lazy {
@@ -76,4 +84,11 @@ class AppDataContainer(private val context: Context) : AppContainer {
             .addCredentialOption(googleIdOption)
             .build()
     }
+
+
+
+    override val storageRepository: StorageRepository by lazy {
+        StorageRepository(firebaseStorage)
+    }
+
 }
