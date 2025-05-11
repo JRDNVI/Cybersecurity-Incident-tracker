@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -81,6 +82,7 @@ fun IncidentFireStore.toIncidentDetails(): IncidentDetails {
         longitude = this.longitude.toString(),
         latitude = this.latitude.toString(),
         status = this.status,
-        email = this.email
+        email = this.email,
+        imageUri = this.imageUri.toUri()
     )
 }

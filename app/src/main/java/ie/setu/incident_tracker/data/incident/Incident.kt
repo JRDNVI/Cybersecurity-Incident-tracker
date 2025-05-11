@@ -1,5 +1,6 @@
 package ie.setu.incident_tracker.data.incident
 
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
@@ -16,5 +17,6 @@ data class Incident (
     val longitude: Float,
     val latitude: Float,
     val status: Boolean,
-    val email: String = ""
+    val email: String = "",
+    val imageUri: Uri = Uri.EMPTY
 )

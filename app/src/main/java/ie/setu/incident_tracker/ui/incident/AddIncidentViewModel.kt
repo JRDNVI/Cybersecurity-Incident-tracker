@@ -1,5 +1,6 @@
 package ie.setu.incident_tracker.ui.incident
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -70,7 +71,8 @@ data class IncidentDetails(
     val longitude: String = "0",
     val latitude: String = "0",
     val email: String = "0",
-    val status: Boolean = false
+    val status: Boolean = false,
+    val imageUri: Uri = Uri.EMPTY
 )
 
 fun IncidentDetails.toItem(): Incident = Incident(
@@ -83,7 +85,8 @@ fun IncidentDetails.toItem(): Incident = Incident(
     longitude = longitude.toFloat(),
     latitude = latitude.toFloat(),
     email = email,
-    status = status
+    status = status,
+    imageUri = imageUri
 )
 
 fun Incident.toIncidentUiState(isEntryValid: Boolean = false): IncidentUiState = IncidentUiState(
@@ -114,7 +117,8 @@ fun Incident.toFireStoreModel(): IncidentFireStore {
         longitude = longitude,
         latitude = latitude,
         status = status,
-        email = email
+        email = email,
+        imageUri = imageUri.toString()
 
     )
 }
