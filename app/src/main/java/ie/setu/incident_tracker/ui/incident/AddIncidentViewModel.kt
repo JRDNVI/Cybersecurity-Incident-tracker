@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import ie.setu.incident_tracker.data.firebase.auth.AuthRepository
 import ie.setu.incident_tracker.data.firebase.database.FireStoreRepository
@@ -13,11 +14,14 @@ import ie.setu.incident_tracker.data.firebase.services.AuthService
 import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import ie.setu.incident_tracker.data.incident.Incident
 import ie.setu.incident_tracker.data.incident.IncidentRepository
+import ie.setu.incident_tracker.data.location.LocationService
+import kotlinx.coroutines.launch
 
 class AddIncidentViewModel(
     private val incidentRepository: IncidentRepository,
     private val authRepository: AuthService,
-    private val fireStoreRepository: FireStoreService
+    private val fireStoreRepository: FireStoreService,
+    private val locationService: LocationService
 ) : ViewModel() {
 
     var name = mutableStateOf("")
@@ -28,8 +32,34 @@ class AddIncidentViewModel(
     var incidentUiState by mutableStateOf(IncidentUiState())
         private set
 
+    fun startCollectingLocation() {
+        viewModelScope.launch {
+            locationService.getLocationFlow().collect { location ->
+                if (incidentUiState.useCurrentLocation && location != null) {
+                    val lat = location.latitude.toString()
+                    val long = location.longitude.toString()
+
+                    incidentUiState = incidentUiState.copy(
+                        incidentDetails = incidentUiState.incidentDetails.copy(
+                            latitude = lat,
+                            longitude = long
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun toggleUseCurrentLocation(enabled: Boolean) {
+        incidentUiState = incidentUiState.copy(useCurrentLocation = enabled)
+
+        if (enabled) {
+            startCollectingLocation()
+        }
+    }
+
     fun updateUiState(incidentDetails: IncidentDetails) {
-        incidentUiState = IncidentUiState(
+        incidentUiState = incidentUiState.copy(
             incidentDetails = incidentDetails,
             isEntryValid = validateInput(incidentDetails)
         )
@@ -44,13 +74,10 @@ class AddIncidentViewModel(
     suspend fun saveItem() {
         if (validateInput()) {
             val userEmail = currentUser?.email ?: return
-
             val updatedDetails = incidentUiState.incidentDetails.copy(email = userEmail)
-            var localIncident = updatedDetails.toItem()
+            val localIncident = updatedDetails.toItem()
 
-            val docId = fireStoreRepository.insert(userEmail, localIncident.toFireStoreModel())
-
-//            localIncident = localIncident.copy(_id = docId)
+            fireStoreRepository.insert(userEmail, localIncident.toFireStoreModel())
             incidentRepository.insertItem(localIncident)
         }
     }
@@ -58,8 +85,9 @@ class AddIncidentViewModel(
 
 data class IncidentUiState(
     val incidentDetails: IncidentDetails = IncidentDetails(),
-    val isEntryValid: Boolean = false
-    )
+    val isEntryValid: Boolean = false,
+    val useCurrentLocation: Boolean = true
+)
 
 data class IncidentDetails(
     val incidentID: Int = 0,

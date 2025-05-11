@@ -1,19 +1,15 @@
 package ie.setu.incident_tracker
 
-import android.icu.text.CaseMap.Title
-import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Divider
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
@@ -35,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,7 +56,6 @@ fun IncidentTrackerTopAppBar(
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
     navigateUp: () -> Unit = {},
-    onLogout: () -> Unit = {},
     onToggleDarkMode: () -> Unit = {},
     onToggleListAll: (Boolean) -> Unit = {},
 
@@ -130,16 +124,6 @@ fun IncidentTrackerTopAppBar(
                     },
                     onClick = {}
                 )
-
-                Divider()
-
-                DropdownMenuItem(
-                    text = { Text("Logout", fontSize = 16.sp) },
-                    onClick = {
-                        expand = false
-                        onLogout()
-                    }
-                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -150,39 +134,53 @@ fun IncidentTrackerTopAppBar(
 
 @Composable
 fun IncidentTrackerBottomBar(
+    currentDestination: String,
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
-    additionalIcons: List<Pair<ImageVector, () -> Unit>> = emptyList()
+    navigateToMap: () -> Unit,
 ) {
     BottomAppBar(
-        modifier = Modifier.height(64.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp),
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
     ) {
-        IconButton(onClick = navigateToHome) {
-            Icon(
-                imageVector = Icons.Default.Home,
-                contentDescription = "Navigate Home"
-            )
-        }
+        val selectedColor = MaterialTheme.colorScheme.primary
+        val defaultColor = MaterialTheme.colorScheme.onPrimaryContainer
 
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = navigateToProfile) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "Navigate to Profile",
-                modifier = Modifier.size(32.dp)
-            )
-        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        additionalIcons.forEach { (icon, action) ->
-            IconButton(onClick = action) {
+            IconButton(onClick = navigateToMap) {
                 Icon(
-                    imageVector = icon,
-                    contentDescription = "Additional Icon",
-                    modifier = Modifier.size(32.dp)
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Navigate to Map",
+                    tint = if (currentDestination == "Map") selectedColor else defaultColor,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            IconButton(onClick = navigateToHome) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "Navigate Home",
+                    tint = if (currentDestination == "Home") selectedColor else defaultColor,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            IconButton(onClick = navigateToProfile) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Navigate to Profile",
+                    tint = if (currentDestination == "profile") selectedColor else defaultColor,
+                    modifier = Modifier.size(28.dp)
                 )
             }
         }

@@ -66,6 +66,7 @@ fun ProfileScreen (
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
     onToggleDarkMode: () -> Unit,
+    navigateToMap: () -> Unit,
     viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.factory),
     loginViewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.factory),
     registerViewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.factory)
@@ -86,8 +87,10 @@ fun ProfileScreen (
     },
     bottomBar = {
         IncidentTrackerBottomBar(
+            currentDestination = "profile",
             navigateToHome = { navigateHome() },
             navigateToProfile = {  },
+            navigateToMap = { navigateToMap() }
 
         )
     }

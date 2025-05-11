@@ -29,7 +29,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -55,6 +54,7 @@ fun AddIncidentScreen(
     navigateHome: () -> Unit,
     navigateToProfile: () -> Unit,
     onToggleDarkMode: () -> Unit,
+    navigateToMap: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -73,12 +73,16 @@ fun AddIncidentScreen(
 
         bottomBar = {
             IncidentTrackerBottomBar(
+                currentDestination = "",
                 navigateToHome = navigateHome,
-                navigateToProfile = { navigateToProfile() }
+                navigateToProfile = { navigateToProfile() },
+                navigateToMap = { navigateToMap() }
             )
         }
     ) { innerPadding ->
-        AddIncidentBody(
+        viewModel.startCollectingLocation()
+
+            AddIncidentBody(
             incidentUiState = viewModel.incidentUiState,
             onIncidentValueChange = viewModel::updateUiState,
             onSaveClick = {
@@ -87,10 +91,10 @@ fun AddIncidentScreen(
                     navigateBack()
                 }
             },
+            viewModel = viewModel,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-
         )
     }
 }
@@ -101,6 +105,7 @@ fun AddIncidentBody(
     incidentUiState: IncidentUiState,
     onIncidentValueChange: (IncidentDetails) -> Unit,
     onSaveClick: () -> Unit,
+    viewModel: AddIncidentViewModel,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -145,6 +150,21 @@ fun AddIncidentBody(
             )
         }
         item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = incidentUiState.useCurrentLocation,
+                    onCheckedChange = {
+                        viewModel.toggleUseCurrentLocation(it)
+                    }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Use current location")
+            }
+        }
+        item {
             OutlinedTextField(
                 value = incidentUiState.incidentDetails.location,
                 onValueChange = { onIncidentValueChange(incidentUiState.incidentDetails.copy(location = it)) },
@@ -155,17 +175,28 @@ fun AddIncidentBody(
         item {
             OutlinedTextField(
                 value = incidentUiState.incidentDetails.longitude,
-                onValueChange = { onIncidentValueChange(incidentUiState.incidentDetails.copy(longitude = it)) },
+                onValueChange = {
+                    onIncidentValueChange(
+                        incidentUiState.incidentDetails.copy(longitude = it)
+                    )
+                },
                 label = { Text("Longitude") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !incidentUiState.useCurrentLocation
             )
+
         }
         item {
             OutlinedTextField(
                 value = incidentUiState.incidentDetails.latitude,
-                onValueChange = { onIncidentValueChange(incidentUiState.incidentDetails.copy(latitude = it)) },
+                onValueChange = {
+                    onIncidentValueChange(
+                        incidentUiState.incidentDetails.copy(latitude = it)
+                    )
+                },
                 label = { Text("Latitude") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !incidentUiState.useCurrentLocation
             )
         }
         item {

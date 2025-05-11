@@ -7,6 +7,7 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.CredentialOption
 import androidx.credentials.CustomCredential
 import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.Firebase
@@ -25,8 +26,15 @@ import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import ie.setu.incident_tracker.data.firebase.storage.StorageRepository
 import ie.setu.incident_tracker.data.incident.IncidentRepository
 import ie.setu.incident_tracker.data.incident.OfflineIncidentRepository
+import ie.setu.incident_tracker.data.location.LocationRepository
+import ie.setu.incident_tracker.data.location.LocationService
+import ie.setu.incident_tracker.data.retrofit.CveRepository
+import ie.setu.incident_tracker.data.retrofit.CveService
+import ie.setu.incident_tracker.data.retrofit.ServiceEndpoints
 import ie.setu.incident_tracker.data.user.OfflineUserRepository
 import ie.setu.incident_tracker.data.user.UserRepository
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 interface AppContainer {
     val incidentRepository : IncidentRepository
@@ -37,6 +45,8 @@ interface AppContainer {
     val credentialRequest: GetCredentialRequest
     val fireStoreRepository: FireStoreService
     val storageRepository: StorageRepository
+    val cveRepository : CveRepository
+    val locationRepository: LocationRepository
 
 }
 
@@ -44,6 +54,18 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val firebaseStorage = FirebaseStorage.getInstance()
+
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(ServiceEndpoints.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private val cveService: CveService by lazy {
+        retrofit.create(CveService::class.java)
+    }
+
 
     override val incidentRepository: IncidentRepository by lazy {
         OfflineIncidentRepository(IncidentDatabase.getDatabase(context).incidentDao())
@@ -88,10 +110,19 @@ class AppDataContainer(private val context: Context) : AppContainer {
             .build()
     }
 
-
-
     override val storageRepository: StorageRepository by lazy {
         StorageRepository(firebaseStorage)
     }
 
+    override val cveRepository: CveRepository by lazy {
+        CveRepository(cveService)
+    }
+
+    private val locationClient: FusedLocationProviderClient by lazy {
+        com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(context)
+    }
+
+    override val locationRepository: LocationRepository by lazy {
+        LocationRepository(locationClient)
+    }
 }

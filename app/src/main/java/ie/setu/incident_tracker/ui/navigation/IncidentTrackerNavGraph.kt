@@ -12,6 +12,8 @@ import ie.setu.incident_tracker.ui.auth.login.LoginScreen
 import ie.setu.incident_tracker.ui.auth.login.LoginScreenDestination
 import ie.setu.incident_tracker.ui.auth.register.RegisterScreen
 import ie.setu.incident_tracker.ui.auth.register.RegisterScreenDestination
+import ie.setu.incident_tracker.ui.cve.CveDetailsScreen
+import ie.setu.incident_tracker.ui.cve.cveDetailsDestination
 import ie.setu.incident_tracker.ui.device.AddDeviceDestination
 import ie.setu.incident_tracker.ui.device.AddDeviceScreen
 import ie.setu.incident_tracker.ui.device.EditDeviceDestination
@@ -24,6 +26,8 @@ import ie.setu.incident_tracker.ui.incident.EditIncidentDestination
 import ie.setu.incident_tracker.ui.incident.EditIncidentScreen
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsDestination
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsScreen
+import ie.setu.incident_tracker.ui.map.MapScreen
+import ie.setu.incident_tracker.ui.map.MapScreenDestination
 import ie.setu.incident_tracker.ui.profile.ProfileScreen
 import ie.setu.incident_tracker.ui.profile.ProfileScreenDestination
 
@@ -59,7 +63,8 @@ fun IncidentTrackerNavHost(
                 navigateToIncidentDetails = { navController.navigate("${ViewIncidentDetailsDestination.route}/${it}")},
                 navigateToSignInScreen = { navController.navigate(LoginScreenDestination.route) },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
-                onToggleDarkMode = onToggleDarkMode
+                onToggleDarkMode = onToggleDarkMode,
+                navigateToMap = {navController.navigate(MapScreenDestination.route)},
             )
         }
 
@@ -68,6 +73,7 @@ fun IncidentTrackerNavHost(
                 navigateBack = { navController.popBackStack() },
                 navigateHome = { navController.navigate(HomeDestination.route) },
                 onSignOut = { navController.navigate(LoginScreenDestination.route)},
+                navigateToMap = {navController.navigate(MapScreenDestination.route)},
                 onToggleDarkMode = onToggleDarkMode
             )
         }
@@ -78,6 +84,7 @@ fun IncidentTrackerNavHost(
                 onNavigateUp = { navController.navigateUp() },
                 navigateHome = { navController.navigate(HomeDestination.route) },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                navigateToMap = {navController.navigate(MapScreenDestination.route)},
                 onToggleDarkMode = onToggleDarkMode
 
             )
@@ -99,6 +106,10 @@ fun IncidentTrackerNavHost(
                     navController.navigate("edit_device/$incidentId/$deviceId")
                 },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                navigateToCveDetail = { cveId ->
+                    navController.navigate("${cveDetailsDestination.route}/$cveId")
+                },
+                navigateToMap = {navController.navigate(MapScreenDestination.route)},
                 onToggleDarkMode = onToggleDarkMode
             )
         }
@@ -121,6 +132,7 @@ fun IncidentTrackerNavHost(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                navigateToMap = {navController.navigate(MapScreenDestination.route)},
                 onToggleDarkMode = onToggleDarkMode
             )
         }
@@ -136,10 +148,10 @@ fun IncidentTrackerNavHost(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                navigateToMap = {navController.navigate(MapScreenDestination.route)},
                 onToggleDarkMode = onToggleDarkMode
             )
         }
-
 
         composable(
             route = AddDeviceDestination.routeWithArgs,
@@ -148,6 +160,31 @@ fun IncidentTrackerNavHost(
             })
         ) {
             AddDeviceScreen(
+                navigateBack = { navController.popBackStack() },
+                navigateToHome = { navController.navigate(HomeDestination.route) },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                navigateToMap = {navController.navigate(MapScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
+            )
+        }
+        composable(
+            route = cveDetailsDestination.routeWithArgs,
+            arguments = listOf(navArgument(cveDetailsDestination.cveIDArg) {
+                type = NavType.StringType
+            })
+            ) {
+                CveDetailsScreen(
+                    navigateBack = { navController.popBackStack() },
+                    navigateToHome = { navController.navigate(HomeDestination.route) },
+                    navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                    navigateToMap = {navController.navigate(MapScreenDestination.route)},
+                    onToggleDarkMode = onToggleDarkMode
+                )
+            }
+        composable(
+            route = MapScreenDestination.route
+        ) {
+            MapScreen(
                 navigateBack = { navController.popBackStack() },
                 navigateToHome = { navController.navigate(HomeDestination.route) },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},

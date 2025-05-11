@@ -10,11 +10,15 @@ The **Cybersecurity Incident Tracker** is an Android application designed to log
 
 ### Core Features:
 - User registration, login, and authentication
-- Adding, viewing, editing, and deleting cybersecurity incidents
+- Adding, viewing, editing, and deleting incidents 
 - Device management for each incident
-- Swipe-to-edit/delete gesture support
-- Search and filter functionality
+- Swipe card to edit/delete
+- Search/filter/sorting functionality
 - Dark Mode
+- using third party API to return CVE details for each device
+- list All Incidents from every user
+- Show the location of every incident on google maps
+- Edit user profile picture 
 
 ### Third-Party / Google APIs:
 - **Firebase Authentication**: Used for secure user sign-in and account management.
@@ -22,6 +26,8 @@ The **Cybersecurity Incident Tracker** is an Android application designed to log
 - **Firebase Firestore**: For NoSQL data storage.
 - **Firebase Storage** : To store user profile images.
 - **Coil**: image loading and caching library for Compose.
+- **CVE API**: Used with retrofit to return details about a devices CVE number (e.g., BASE_URL + {cve_id})
+- **Google Maps API** Used to get long/lat of user and to show google maps
 
 ---
 
@@ -60,10 +66,13 @@ classDiagram
 
 ## 4. UX / DX Approach Adopted
 
-**Approach Chosen**: Jetpack Compose-first design
-
-### Rationale:
-
+**Approach Chosen**: I only used compose. Compose provides many features that reduces development time and codebase size.
+- Core Compose Functionality used:
+  - remember, mutableStateOf, StateFlow, viewModel(): Allows UI to be state driven making it reactive.
+  - @Composable functions: Makes building UIs easier by creating small components (e.g, Cards ) and reusing them throughout the app.
+  - Material 3: Used OutlinedTextField, Button, Scaffold, TopAppBar, BottomBar, etc.
+  - Navigation: Used NavHostController and NavigationDestination routing.
+  - Testing: @Preview used for layout previews.
 
 ---
 
@@ -94,19 +103,30 @@ This workflow ensured separation between development, staging, and production.
 
 **Repository Link**:  
 [GitHub - Cybersecurity Incident Tracker](https://github.com/JRDNVI/Cybersecurity-Incident-tracker)
-
-
 ---
 
 ## 6. Personal Statement
+This project was a great for reinforcing the core concepts of Android development and extending my understanding of how to interact 
+and implement external APIs into my application (e.g., Firebase, Google Maps, CVE API). As I was developing compose became easier to
+use, which made creating UIs, connecting routes, and managing states became very quick to do. This project also helped my understanding of
+git (e.g., rebase, etc..). Adopting a develop and release branch strategy made version control more effeicent but also safer.
+
+In summary, I really enjoyed making this application and feel comfortable with kotlin/compose/firebase.
+
 
 ---
 
 ## 7. References
-https://developer.android.com/reference/kotlin/androidx/compose/material/DismissState
-https://developer.android.com/reference/kotlin/androidx/compose/material/DismissDirection
-https://www.geeksforgeeks.org/android-jetpack-compose-swipe-to-dismiss-with-material-3/
-https://mujeebkhan1831.medium.com/how-to-implement-dark-and-light-theme-in-jetpack-compose-f96e4cef3017
-https://m3.material.io/components/switch/overview
+- Swipe functionality for cards
+  - https://developer.android.com/reference/kotlin/androidx/compose/material/DismissState
+  - https://developer.android.com/reference/kotlin/androidx/compose/material/DismissDirection
+  - https://www.geeksforgeeks.org/android-jetpack-compose-swipe-to-dismiss-with-material-3/
+
+- Dark Mode & Switch 
+  - https://mujeebkhan1831.medium.com/how-to-implement-dark-and-light-theme-in-jetpack-compose-f96e4cef3017
+  - https://m3.material.io/components/switch/overview
+
+- Used `ComposeExamples-toml` to help with Google maps integration.
+- Postman used to understand the JSON object structure of the CVE API response.
 ---
 
