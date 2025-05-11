@@ -42,6 +42,7 @@ fun HomeScreen(
     navigateToEditIncident: (String) -> Unit,
     navigateToSignInScreen: () -> Unit,
     navigateToProfile: () -> Unit,
+    onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -55,20 +56,11 @@ fun HomeScreen(
             IncidentTrackerTopAppBar(
                 title = "Welcome, ${userName ?: "User"}",
                 canNavigateBack = false,
-                actions = {
-                    IconButton(onClick = { expand = true }) {
-                        M3Icon(Icons.Default.Menu, contentDescription = "Menu", modifier = Modifier.size(24.dp))
-                    }
-                    M3DropdownMenu(expanded = expand, onDismissRequest = { expand = false }) {
-                        DropdownMenuItem(text = { M3Text("Analytics", fontSize = 16.sp) }, onClick = { expand = false })
-                        DropdownMenuItem(text = { M3Text("Profile", fontSize = 16.sp) }, onClick = { expand = false })
-                        DropdownMenuItem(text = { M3Text("Logout", fontSize = 16.sp) }, onClick = {
-                            expand = false
-                            navigateToSignInScreen()
-                        })
-                    }
-                }
+                onLogout = { navigateToSignInScreen() },
+                onToggleDarkMode = { onToggleDarkMode() },
+                onToggleListAll = {  }
             )
+
         },
         bottomBar = {
             IncidentTrackerBottomBar(

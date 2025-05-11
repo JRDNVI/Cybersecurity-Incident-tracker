@@ -7,10 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ie.setu.incident_tracker.ui.auth.SignInDestination
-import ie.setu.incident_tracker.ui.auth.SignInScreen
-import ie.setu.incident_tracker.ui.auth.SignUpDestination
-import ie.setu.incident_tracker.ui.auth.SignUpScreen
+
 import ie.setu.incident_tracker.ui.auth.login.LoginScreen
 import ie.setu.incident_tracker.ui.auth.login.LoginScreenDestination
 import ie.setu.incident_tracker.ui.auth.register.RegisterScreen
@@ -33,6 +30,7 @@ import ie.setu.incident_tracker.ui.profile.ProfileScreenDestination
 @Composable
 fun IncidentTrackerNavHost(
     navController: NavHostController,
+    onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -54,19 +52,14 @@ fun IncidentTrackerNavHost(
             )
         }
 
-        composable(route = SignInDestination.route) {
-            SignInScreen(
-                navigateToHomeScreen = { navController.navigate(HomeDestination.route) },
-                navigateToSignUpScreen = { navController.navigate(SignUpDestination.route) }
-            )
-        }
         composable(route = HomeDestination.route) {
             HomeScreen(
                 navigateToAddIncident = { navController.navigate(AddIncidentDestination.route) },
                 navigateToEditIncident = { navController.navigate("${EditIncidentDestination.route}/${it}") },
                 navigateToIncidentDetails = { navController.navigate("${ViewIncidentDetailsDestination.route}/${it}")},
-                navigateToSignInScreen = { navController.navigate(SignInDestination.route) },
-                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
+                navigateToSignInScreen = { navController.navigate(LoginScreenDestination.route) },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
             )
         }
 
@@ -75,6 +68,7 @@ fun IncidentTrackerNavHost(
                 navigateBack = { navController.popBackStack() },
                 navigateHome = { navController.navigate(HomeDestination.route) },
                 onSignOut = { navController.navigate(LoginScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
             )
         }
 
@@ -83,15 +77,12 @@ fun IncidentTrackerNavHost(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
                 navigateHome = { navController.navigate(HomeDestination.route) },
-                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
+
             )
         }
-        composable(route = SignUpDestination.route) {
-            SignUpScreen(
-                navigateToHomeScreen = { navController.navigate(SignInDestination.route) },
-                navigateBack = { navController.navigate(SignInDestination.route) }
-            )
-        }
+
         composable(
             route = ViewIncidentDetailsDestination.routeWithArgs,
             arguments = listOf(navArgument(ViewIncidentDetailsDestination.incidentIdArg) {
@@ -107,7 +98,8 @@ fun IncidentTrackerNavHost(
                 navigateToEditDevice = { incidentId, deviceId ->
                     navController.navigate("edit_device/$incidentId/$deviceId")
                 },
-                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
             )
         }
 
@@ -128,7 +120,8 @@ fun IncidentTrackerNavHost(
             EditDeviceScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
-                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
             )
         }
 
@@ -142,7 +135,8 @@ fun IncidentTrackerNavHost(
             EditIncidentScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
-                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
             )
         }
 
@@ -156,7 +150,8 @@ fun IncidentTrackerNavHost(
             AddDeviceScreen(
                 navigateBack = { navController.popBackStack() },
                 navigateToHome = { navController.navigate(HomeDestination.route) },
-                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
+                onToggleDarkMode = onToggleDarkMode
             )
         }
     }

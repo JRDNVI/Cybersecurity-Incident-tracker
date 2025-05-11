@@ -54,6 +54,7 @@ fun AddIncidentScreen(
     onNavigateUp: () -> Unit,
     navigateHome: () -> Unit,
     navigateToProfile: () -> Unit,
+    onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -65,6 +66,7 @@ fun AddIncidentScreen(
                 canNavigateBack = true,
                 modifier = modifier,
                 navigateUp = onNavigateUp,
+                onToggleDarkMode = { onToggleDarkMode() }
 
             )
         },

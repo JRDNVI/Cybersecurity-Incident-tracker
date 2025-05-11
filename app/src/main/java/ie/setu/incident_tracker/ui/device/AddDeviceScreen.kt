@@ -46,6 +46,7 @@ fun AddDeviceScreen(
     navigateBack: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
+    onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddDeviceViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -57,7 +58,8 @@ fun AddDeviceScreen(
             IncidentTrackerTopAppBar(
                 title = stringResource(AddDeviceDestination.titleRes),
                 canNavigateBack = true,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                onToggleDarkMode = { onToggleDarkMode() }
             )
         },
         bottomBar = {

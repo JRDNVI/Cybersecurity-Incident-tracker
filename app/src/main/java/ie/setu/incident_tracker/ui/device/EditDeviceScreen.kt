@@ -32,6 +32,7 @@ fun EditDeviceScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     navigateToProfile: () -> Unit,
+    onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditDeviceViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -42,7 +43,8 @@ fun EditDeviceScreen(
             IncidentTrackerTopAppBar(
                 title = stringResource(EditDeviceDestination.titleRes),
                 canNavigateBack = true,
-                navigateUp = onNavigateUp
+                navigateUp = onNavigateUp,
+                onToggleDarkMode = { onToggleDarkMode() }
             )
         },
         bottomBar = {
