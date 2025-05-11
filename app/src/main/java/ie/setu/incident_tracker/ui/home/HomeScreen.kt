@@ -67,6 +67,7 @@ fun HomeScreen(
     navigateToIncidentDetails: (String) -> Unit,
     navigateToEditIncident: (String) -> Unit,
     navigateToSignInScreen: () -> Unit,
+    navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -125,6 +126,7 @@ fun HomeScreen(
         bottomBar = {
             IncidentTrackerBottomBar(
                 navigateToHome = { },
+                navigateToProfile = {  navigateToProfile()},
                 additionalIcons = listOf(
                     Icons.Default.Add to { navigateToAddIncident() }
                 )

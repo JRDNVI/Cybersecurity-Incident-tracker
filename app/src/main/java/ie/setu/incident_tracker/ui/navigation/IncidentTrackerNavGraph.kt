@@ -27,6 +27,8 @@ import ie.setu.incident_tracker.ui.incident.EditIncidentDestination
 import ie.setu.incident_tracker.ui.incident.EditIncidentScreen
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsDestination
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsScreen
+import ie.setu.incident_tracker.ui.profile.ProfileScreen
+import ie.setu.incident_tracker.ui.profile.ProfileScreenDestination
 
 @Composable
 fun IncidentTrackerNavHost(
@@ -63,7 +65,16 @@ fun IncidentTrackerNavHost(
                 navigateToAddIncident = { navController.navigate(AddIncidentDestination.route) },
                 navigateToEditIncident = { navController.navigate("${EditIncidentDestination.route}/${it}") },
                 navigateToIncidentDetails = { navController.navigate("${ViewIncidentDetailsDestination.route}/${it}")},
-                navigateToSignInScreen = { navController.navigate(SignInDestination.route) }
+                navigateToSignInScreen = { navController.navigate(SignInDestination.route) },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
+            )
+        }
+
+        composable(route = ProfileScreenDestination.route) {
+            ProfileScreen(
+                navigateBack = { navController.popBackStack() },
+                navigateHome = { navController.navigate(HomeDestination.route) },
+                onSignOut = { navController.navigate(LoginScreenDestination.route)},
             )
         }
 
@@ -71,7 +82,8 @@ fun IncidentTrackerNavHost(
             AddIncidentScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
-                navigateHome = { navController.navigate(HomeDestination.route) }
+                navigateHome = { navController.navigate(HomeDestination.route) },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
             )
         }
         composable(route = SignUpDestination.route) {
@@ -94,7 +106,8 @@ fun IncidentTrackerNavHost(
                 },
                 navigateToEditDevice = { incidentId, deviceId ->
                     navController.navigate("edit_device/$incidentId/$deviceId")
-                }
+                },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
             )
         }
 
@@ -113,9 +126,9 @@ fun IncidentTrackerNavHost(
             requireNotNull(deviceId)
 
             EditDeviceScreen(
-
                 navigateBack = { navController.popBackStack() },
-                onNavigateUp = { navController.navigateUp() }
+                onNavigateUp = { navController.navigateUp() },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
             )
         }
 
@@ -128,7 +141,8 @@ fun IncidentTrackerNavHost(
         ) {
             EditIncidentScreen(
                 navigateBack = { navController.popBackStack() },
-                onNavigateUp = { navController.navigateUp() }
+                onNavigateUp = { navController.navigateUp() },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
             )
         }
 
@@ -141,8 +155,8 @@ fun IncidentTrackerNavHost(
         ) {
             AddDeviceScreen(
                 navigateBack = { navController.popBackStack() },
-                navigateToHome = { navController.navigate(HomeDestination.route) }
-
+                navigateToHome = { navController.navigate(HomeDestination.route) },
+                navigateToProfile = {navController.navigate(ProfileScreenDestination.route)}
             )
         }
     }

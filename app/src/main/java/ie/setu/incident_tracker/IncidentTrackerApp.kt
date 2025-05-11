@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,6 +64,7 @@ fun IncidentTrackerTopAppBar(
 @Composable
 fun IncidentTrackerBottomBar(
     navigateToHome: () -> Unit,
+    navigateToProfile: () -> Unit,
     additionalIcons: List<Pair<ImageVector, () -> Unit>> = emptyList()
 ) {
     BottomAppBar(
@@ -76,15 +78,24 @@ fun IncidentTrackerBottomBar(
                 contentDescription = "Navigate Home"
             )
         }
+
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(onClick = navigateToProfile) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Navigate to Profile",
+                modifier = Modifier.size(32.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
         additionalIcons.forEach { (icon, action) ->
-            Spacer(modifier = Modifier.weight(0.5f))
             IconButton(onClick = action) {
                 Icon(
                     imageVector = icon,
                     contentDescription = "Additional Icon",
-
-                    modifier = Modifier
-                        .size(32.dp)
+                    modifier = Modifier.size(32.dp)
                 )
             }
         }
