@@ -1,9 +1,11 @@
 package ie.setu.incident_tracker.ui.incident
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -58,16 +60,21 @@ class EditIncidentViewModel(
             )
     }
 
-    suspend fun updateIncident() {
-        if (!validateInput(incidentUiState.incidentDetails)) return
+    suspend fun updateIncident() : Boolean {
+        if (!validateInput(incidentUiState.incidentDetails)) return false
+        try {
+            val updatedLocal = incidentUiState.incidentDetails.toItem().copy(email = userEmail)
+            incidentRepository.updateItem(updatedLocal)
 
-        val updatedLocal = incidentUiState.incidentDetails.toItem().copy(email = userEmail)
-        incidentRepository.updateItem(updatedLocal)
-
-        val firestoreIncident = updatedLocal.toFireStoreModel().copy(
-            _id = fireStoreDocumentId ?: ""
-        )
-        fireStoreRepository.update(userEmail, firestoreIncident)
+            val firestoreIncident = updatedLocal.toFireStoreModel().copy(
+                _id = fireStoreDocumentId ?: ""
+            )
+            fireStoreRepository.update(userEmail, firestoreIncident)
+            return true
+        } catch (e : Exception) {
+            Log.d("Update Error", e.toString())
+        }
+        return false
     }
 }
 
@@ -81,6 +88,7 @@ fun IncidentFireStore.toIncidentDetails(): IncidentDetails {
         longitude = this.longitude.toString(),
         latitude = this.latitude.toString(),
         status = this.status,
-        email = this.email
+        email = this.email,
+        imageUri = this.imageUri.toUri()
     )
 }

@@ -7,10 +7,10 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import ie.setu.incident_tracker.IncidentTrackerApplication
-import ie.setu.incident_tracker.ui.auth.SignInViewModel
+
 import ie.setu.incident_tracker.ui.home.HomeViewModel
 import ie.setu.incident_tracker.ui.incident.AddIncidentViewModel
-import ie.setu.incident_tracker.ui.auth.SignUpViewModel
+
 import ie.setu.incident_tracker.ui.device.AddDeviceViewModel
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsViewModel
 import ie.setu.incident_tracker.ui.device.EditDeviceViewModel
@@ -54,20 +54,6 @@ object AppViewModelProvider {
                 application.container.incidentRepository,
                 application.container.authRepository,
                 application.container.fireStoreRepository
-            )
-        }
-
-        initializer {
-            val application = this.IncidentTrackerApplication()
-            SignInViewModel(
-                application.container.userRepository
-            )
-        }
-
-        initializer {
-            val application = this.IncidentTrackerApplication()
-            SignUpViewModel(
-                application.container.userRepository
             )
         }
 

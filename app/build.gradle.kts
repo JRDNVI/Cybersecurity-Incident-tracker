@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "ie.setu.incident_tracker"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "ie.setu.incident_tracker"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -82,6 +82,8 @@ dependencies {
 
     implementation(libs.googleid)
     implementation(libs.coil.compose)
+
+    implementation(libs.androidx.material)
 
 
 

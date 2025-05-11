@@ -1,22 +1,22 @@
 package ie.setu.incident_tracker.ui.home
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
-import ie.setu.incident_tracker.data.firebase.database.FireStoreRepository
 import ie.setu.incident_tracker.data.firebase.services.AuthService
 import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import ie.setu.incident_tracker.data.firebase.services.IncidentModel
 import ie.setu.incident_tracker.data.incident.Incident
 import ie.setu.incident_tracker.data.incident.IncidentRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -27,6 +27,7 @@ class HomeViewModel(
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
+    private var showingAll by mutableStateOf(false)
 
     var name = mutableStateOf("")
     var email = mutableStateOf("")
@@ -34,27 +35,26 @@ class HomeViewModel(
         get() = authService.currentUser
 
     init {
-        viewModelScope.launch {
-            try {
-                fireStoreRepository.getAll(currentUser?.email ?: "").collect { incidents ->
-                    Log.d("FirestoreFetch", "Fetched Firestore incidents: ${incidents.size}")
-                    _homeUiState.value = _homeUiState.value.copy(firestoreIncidentList = incidents)
+        loadUserIncidents()
+    }
 
-                    incidents.forEach {
-                        Log.d("FirestoreFetch", "Incident: ${it.title} (${it.email})")
-                    }
+    fun loadUserIncidents() {
+        showingAll = false
+        currentUser?.let { user ->
+            viewModelScope.launch {
+                fireStoreRepository.getAll(user.email ?: "").collect { incidents ->
+                    _homeUiState.value = _homeUiState.value.copy(firestoreIncidentList = incidents)
                 }
-            } catch (e: Exception) {
-                Log.e("FirestoreFetch", "Error fetching from Firestore", e)
-            }
-            currentUser?.let {
-                name.value = it.displayName.orEmpty()
-                email.value = it.email.orEmpty()
             }
         }
     }
 
-
+    suspend fun listAllIncidents() {
+        showingAll = true
+        val allIncidents = fireStoreRepository.getAllIncidents().first()
+        _homeUiState.update { it.copy(firestoreIncidentList = allIncidents) }
+        Log.d("List all", allIncidents.toString())
+    }
 
     fun isAuthenticated() = authService.isUserAuthenticatedInFirebase
 

@@ -67,6 +67,7 @@ fun ViewIncidentDetailsScreen(
     navigateToAddDevice: (String) -> Unit,
     navigateToEditDevice: (String, String) -> Unit,
     navigateToProfile: () -> Unit,
+    onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ViewIncidentDetailsViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -84,7 +85,8 @@ fun ViewIncidentDetailsScreen(
             IncidentTrackerTopAppBar(
                 title = stringResource(ViewIncidentDetailsDestination.titleRes),
                 canNavigateBack = true,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                onToggleDarkMode = { onToggleDarkMode() }
             )
         },
 
