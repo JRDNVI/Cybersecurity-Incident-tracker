@@ -15,6 +15,7 @@ data class IncidentFireStore(
     val latitude: Float = 0f,
     val status: Boolean = false,
     val email: String = "",
+    var imageUri: String = "",
     val devices: List<DeviceFireStore> = emptyList()
 )
 
