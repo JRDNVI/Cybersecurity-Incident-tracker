@@ -61,7 +61,6 @@ fun IncidentTrackerNavHost(
                 navigateToAddIncident = { navController.navigate(AddIncidentDestination.route) },
                 navigateToEditIncident = { navController.navigate("${EditIncidentDestination.route}/${it}") },
                 navigateToIncidentDetails = { navController.navigate("${ViewIncidentDetailsDestination.route}/${it}")},
-                navigateToSignInScreen = { navController.navigate(LoginScreenDestination.route) },
                 navigateToProfile = {navController.navigate(ProfileScreenDestination.route)},
                 onToggleDarkMode = onToggleDarkMode,
                 navigateToMap = {navController.navigate(MapScreenDestination.route)},

@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -100,6 +101,15 @@ fun ViewIncidentDetailsScreen(
                 navigateToProfile = { navigateToProfile()},
                 navigateToMap = { navigateToMap() },
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navigateToAddDevice(viewIncidentUiState.value.incidentID) },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Incident")
+            }
         }
     ) { innerPadding ->
         Box(

@@ -1,6 +1,7 @@
 package ie.setu.incident_tracker.ui.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -113,9 +114,17 @@ fun HomeBody(
     var sortDescending by remember { mutableStateOf(true) }
 
     val searchOptions = listOf("Title", "Location", "Type")
+    incidentList.forEach {
+        try {
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it.dateOfOccurrence)
+        } catch (e: Exception) {
+            Log.w("DateParseError", "Could not parse date '${it.dateOfOccurrence}' for incident ${it._id}")
+        }
+    }
+
     val sortedIncidents = incidentList.sortedBy {
         try {
-            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it.dateOfOccurrence)
+            val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.dateOfOccurrence)
             date?.time ?: 0L
         } catch (e: Exception) {
             0L
