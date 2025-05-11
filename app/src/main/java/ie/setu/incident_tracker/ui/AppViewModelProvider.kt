@@ -7,17 +7,14 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import ie.setu.incident_tracker.IncidentTrackerApplication
-
 import ie.setu.incident_tracker.ui.home.HomeViewModel
 import ie.setu.incident_tracker.ui.incident.AddIncidentViewModel
-
 import ie.setu.incident_tracker.ui.device.AddDeviceViewModel
 import ie.setu.incident_tracker.ui.incident.ViewIncidentDetailsViewModel
 import ie.setu.incident_tracker.ui.device.EditDeviceViewModel
 import ie.setu.incident_tracker.ui.incident.EditIncidentViewModel
 import ie.setu.incident_tracker.ui.auth.login.LoginViewModel
 import ie.setu.incident_tracker.ui.auth.register.RegisterViewModel
-import ie.setu.incident_tracker.ui.cve.CveDetailsScreen
 import ie.setu.incident_tracker.ui.cve.CveDetailsViewModel
 import ie.setu.incident_tracker.ui.map.MapViewModel
 import ie.setu.incident_tracker.ui.profile.ProfileViewModel
@@ -56,7 +53,8 @@ object AppViewModelProvider {
             AddIncidentViewModel(
                 application.container.incidentRepository,
                 application.container.authRepository,
-                application.container.fireStoreRepository
+                application.container.fireStoreRepository,
+                application.container.locationRepository
             )
         }
 

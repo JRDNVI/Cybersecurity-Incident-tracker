@@ -1,7 +1,6 @@
 package ie.setu.incident_tracker.ui.incident
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -33,8 +32,11 @@ fun EditIncidentScreen(
     onToggleDarkMode: () -> Unit,
     navigateToMap: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EditIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
-) {
+    viewModel: EditIncidentViewModel = viewModel(factory = AppViewModelProvider.factory),
+    addViewModel: AddIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
+)
+
+{
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     Scaffold(
@@ -68,6 +70,7 @@ fun EditIncidentScreen(
                     navigateBack()
                 }
             },
+            viewModel = addViewModel,
             modifier = modifier
                 .padding(innerPadding)
                 .fillMaxSize()

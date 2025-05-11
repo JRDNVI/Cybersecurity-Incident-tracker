@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -59,7 +55,6 @@ fun MapScreen(
                 canNavigateBack = true,
                 modifier =  Modifier,
                 navigateUp = navigateBack,
-                onLogout = {  },
                 onToggleDarkMode = { onToggleDarkMode() },
                 onToggleListAll = { }
             )
@@ -89,7 +84,6 @@ fun MapScreen(
                 }
             }
 
-
             val uiSettings by remember {
                 mutableStateOf(
                     MapUiSettings(
@@ -104,7 +98,6 @@ fun MapScreen(
                     MapProperties(
                         mapType = MapType.NORMAL,
                         isMyLocationEnabled = locationPermissions.allPermissionsGranted,
-                        // isTrafficEnabled = true
                     )
                 )
             }
@@ -124,7 +117,6 @@ fun MapScreen(
 
 
             val incidents = viewModel.incidents.collectAsState().value.firestoreIncidentList
-            //  var setu = LatLng(52.245696, -7.139102)
             Column(
                 modifier = Modifier.background(MaterialTheme.colorScheme.secondary)
             ) {

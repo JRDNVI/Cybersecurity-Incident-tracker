@@ -40,7 +40,6 @@ fun HomeScreen(
     navigateToAddIncident: () -> Unit,
     navigateToIncidentDetails: (String) -> Unit,
     navigateToEditIncident: (String) -> Unit,
-    navigateToSignInScreen: () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToMap: () -> Unit,
     onToggleDarkMode: () -> Unit,
@@ -57,7 +56,6 @@ fun HomeScreen(
             IncidentTrackerTopAppBar(
                 title = "Welcome, $userName",
                 canNavigateBack = false,
-                onLogout = { navigateToSignInScreen() },
                 onToggleDarkMode = { onToggleDarkMode() },
                 onToggleListAll = { enabled ->
                     if (enabled) {
@@ -76,6 +74,15 @@ fun HomeScreen(
                 navigateToProfile = { navigateToProfile() },
                 navigateToMap = { navigateToMap() },
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = navigateToAddIncident,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Incident")
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
