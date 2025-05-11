@@ -1,6 +1,7 @@
 package ie.setu.incident_tracker.ui.home
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,11 +44,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import ie.setu.incident_tracker.IncidentTrackerBottomBar
 import ie.setu.incident_tracker.IncidentTrackerTopAppBar
 import ie.setu.incident_tracker.R
@@ -206,6 +213,8 @@ fun ListIncidents(
         items(incidentList, key = { it._id }) { incident ->
             var isExpanded by remember { mutableStateOf(false) }
             var showDialog by remember { mutableStateOf(false) }
+            var photoUri = Uri.parse(incident.imageUri)
+
 
             Card(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
@@ -223,10 +232,24 @@ fun ListIncidents(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(photoUri)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(CircleShape)
+
+                        )
                         Text(
                             text = incident.title,
                             style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(6.dp)
                         )
                         Text(
                             text = incident.type,

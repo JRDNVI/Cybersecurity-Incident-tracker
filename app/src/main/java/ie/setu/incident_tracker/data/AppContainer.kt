@@ -65,7 +65,10 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 
     override val fireStoreRepository: FireStoreService by lazy {
-        FireStoreRepository(firestore)
+        FireStoreRepository(
+            firestore,
+            authRepository
+        )
     }
 
     override val credentialManager: CredentialManager by lazy {

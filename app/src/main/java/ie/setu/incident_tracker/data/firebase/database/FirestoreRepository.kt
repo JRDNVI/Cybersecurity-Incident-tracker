@@ -12,11 +12,14 @@ import ie.setu.incident_tracker.data.rules.Constants.INCIDENT_COLLECTION
 import ie.setu.incident_tracker.data.rules.Constants.USER_EMAIL
 import kotlinx.coroutines.tasks.await
 import com.google.firebase.firestore.dataObjects
+import ie.setu.incident_tracker.data.firebase.auth.AuthRepository
 import ie.setu.incident_tracker.data.firebase.model.DeviceFireStore
+import ie.setu.incident_tracker.data.firebase.services.AuthService
 import java.util.Date
 
 class FireStoreRepository(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val authRepository: AuthService
 ) : FireStoreService {
 
     override suspend fun getAll(email: String): Incidents {
@@ -35,7 +38,10 @@ class FireStoreRepository(
 
     override suspend fun insert(email: String, incident: IncidentModel): String {
         val docRef = firestore.collection(INCIDENT_COLLECTION).document()
-        val data = incident.copy(email = email)
+        val data = incident.copy(
+            email = email,
+            imageUri = authRepository.customPhotoUri!!.toString()
+        )
         docRef.set(data).await()
         return docRef.id
     }
