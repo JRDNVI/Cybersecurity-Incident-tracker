@@ -21,6 +21,7 @@ ksp = "2.0.20-1.0.25"
 lifecycleCompiler = "2.8.7"
 firebaseFirestore = "25.1.4"
 googleid = "1.1.1"
+firebaseStorage = "21.0.1"
 
 
 [libraries]
@@ -47,6 +48,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 androidx-lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "lifecycleCompiler" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"}
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

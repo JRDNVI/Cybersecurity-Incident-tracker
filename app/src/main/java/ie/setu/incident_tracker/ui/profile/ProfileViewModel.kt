@@ -4,13 +4,15 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ie.setu.incident_tracker.data.firebase.services.AuthService
+import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel (
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val fireStoreService: FireStoreService
 ) : ViewModel() {
 
     val currentUser = authService.currentUser
@@ -18,7 +20,7 @@ class ProfileViewModel (
     val profileUiSate: StateFlow<ProfileUiSate> = _profileUiState.asStateFlow()
 
     val photoUri get() = authService.customPhotoUri
-
+    val email get() = authService.email.toString()
 
     init {
         currentUser?.let { user ->
@@ -35,12 +37,13 @@ class ProfileViewModel (
     }
 
     fun updatePhotoUri(uri: Uri) {
-        viewModelScope.launch { authService.updatePhoto(uri) }
+        viewModelScope.launch {
+            authService.updatePhoto(uri)
+            fireStoreService.updatePhotoUris(email, photoUri!!)
+        }
     }
 
 }
-
-
 
 data class ProfileUiSate(
     val name: String = "",
