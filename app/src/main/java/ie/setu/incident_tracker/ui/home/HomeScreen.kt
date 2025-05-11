@@ -23,6 +23,8 @@ import ie.setu.incident_tracker.ui.AppViewModelProvider
 import ie.setu.incident_tracker.ui.navigation.NavigationDestination
 import ie.setu.incident_tracker.ui.components.SwipeableIncidentCard
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import androidx.compose.material3.TextField as M3TextField
 import androidx.compose.material3.Text as M3Text
 
@@ -46,12 +48,13 @@ fun HomeScreen(
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
     val currentUser = viewModel.currentUser
-    val userName = if (viewModel.isAuthenticated()) currentUser?.displayName else ""
+    var userName = if (viewModel.isAuthenticated()) currentUser?.displayName else ""
+    userName = userName?.split(" ")?.firstOrNull() ?: "User"
 
     Scaffold(
         topBar = {
             IncidentTrackerTopAppBar(
-                title = "Welcome, ${userName ?: "User"}",
+                title = "Welcome, $userName",
                 canNavigateBack = false,
                 onLogout = { navigateToSignInScreen() },
                 onToggleDarkMode = { onToggleDarkMode() },
@@ -97,25 +100,79 @@ fun HomeBody(
     onFilterTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var searchField by remember { mutableStateOf("Title") }
+    var sortDescending by remember { mutableStateOf(true) }
+
+    val searchOptions = listOf("Title", "Location", "Type")
+    val sortedIncidents = incidentList.sortedBy {
+        try {
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it.dateOfOccurrence)
+            date?.time ?: 0L
+        } catch (e: Exception) {
+            0L
+        }
+    }.let { if (sortDescending) it.reversed() else it }
+
+    val filteredIncidents = sortedIncidents.filter {
+        when (searchField) {
+            "Title" -> it.title.contains(filterText, ignoreCase = true)
+            "Location" -> it.location.contains(filterText, ignoreCase = true)
+            "Type" -> it.type.contains(filterText, ignoreCase = true)
+            else -> false
+        }
+    }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
-        M3TextField(
-            value = filterText,
-            onValueChange = onFilterTextChange,
-            label = { M3Text("Search") },
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
-            shape = RoundedCornerShape(8.dp)
-        )
-        if (incidentList.isEmpty()) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            M3TextField(
+                value = filterText,
+                onValueChange = onFilterTextChange,
+                label = { M3Text("Search") },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
+                shape = RoundedCornerShape(8.dp)
+            )
+
+            var fieldDropdownExpanded by remember { mutableStateOf(false) }
+            Box {
+                Button(onClick = { fieldDropdownExpanded = true }) {
+                    M3Text(searchField)
+                }
+                DropdownMenu(
+                    expanded = fieldDropdownExpanded,
+                    onDismissRequest = { fieldDropdownExpanded = false }
+                ) {
+                    searchOptions.forEach { option ->
+                        DropdownMenuItem(
+                            text = { M3Text(option) },
+                            onClick = {
+                                searchField = option
+                                fieldDropdownExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(onClick = { sortDescending = !sortDescending }) {
+                M3Text(if (sortDescending) "Newest" else "Oldest")
+            }
+        }
+
+        if (filteredIncidents.isEmpty()) {
             M3Text(
                 "No Incidents",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge
             )
         } else {
-            val filteredIncidents = incidentList.filter {
-                it.title.contains(filterText, ignoreCase = true)
-            }
-
             LazyColumn(modifier = Modifier.padding(10.dp)) {
                 items(filteredIncidents, key = { it._id }) { incident ->
                     Spacer(Modifier.padding(5.dp))

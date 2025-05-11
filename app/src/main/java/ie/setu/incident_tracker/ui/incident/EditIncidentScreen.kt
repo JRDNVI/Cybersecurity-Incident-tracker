@@ -1,5 +1,6 @@
 package ie.setu.incident_tracker.ui.incident
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -7,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ie.setu.incident_tracker.IncidentTrackerBottomBar
@@ -33,6 +35,7 @@ fun EditIncidentScreen(
     viewModel: EditIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             IncidentTrackerTopAppBar(
@@ -54,7 +57,11 @@ fun EditIncidentScreen(
             onIncidentValueChange = viewModel::updateUiState,
             onSaveClick = {
                 scope.launch {
-                    viewModel.updateIncident()
+                    if (viewModel.updateIncident()) {
+                        Toast.makeText(context, "Update Successful!", Toast.LENGTH_SHORT).show()
+                    } else{
+                        Toast.makeText(context, "Not your Incident!", Toast.LENGTH_SHORT).show()
+                    }
                     navigateBack()
                 }
             },
