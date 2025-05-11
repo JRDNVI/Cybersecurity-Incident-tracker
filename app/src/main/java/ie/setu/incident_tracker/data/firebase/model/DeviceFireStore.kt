@@ -8,6 +8,7 @@ data class DeviceFireStore(
    val ipAddress: String = "",
    val macAddress: String = "",
    val operatingSystem: String = "",
-   val cveNumber: String = ""
+   val cveNumber: String = "",
+   var imageUri: String = ""
 )
 

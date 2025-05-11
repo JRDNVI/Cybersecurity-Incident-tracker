@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.lifecycle.compiler)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 

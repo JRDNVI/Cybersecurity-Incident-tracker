@@ -1,5 +1,7 @@
 package ie.setu.incident_tracker.data.firebase.database
 
+import android.net.Uri
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import ie.setu.incident_tracker.data.firebase.model.IncidentFireStore
@@ -89,5 +91,23 @@ class FireStoreRepository(
             }
             incidentRef.update("devices", newDeviceList).await()
         }
+    }
+
+    override suspend fun updatePhotoUris(email: String, uri: Uri) {
+
+        firestore.collection(INCIDENT_COLLECTION)
+            .whereEqualTo(USER_EMAIL, email)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    Log.d("FSR Updating ID", document.toString())
+                    firestore.collection(INCIDENT_COLLECTION)
+                        .document(document.id)
+                        .update("imageUri", uri.toString())
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Error", exception.toString())
+            }
     }
 }

@@ -111,7 +111,8 @@ object AppViewModelProvider {
         initializer {
             val application = this.IncidentTrackerApplication()
             ProfileViewModel(
-                application.container.authRepository
+                application.container.authRepository,
+                application.container.fireStoreRepository
             )
         }
     }
