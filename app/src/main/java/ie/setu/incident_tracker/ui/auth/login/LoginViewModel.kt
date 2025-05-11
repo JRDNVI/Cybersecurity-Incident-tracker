@@ -40,11 +40,11 @@ class LoginViewModel(
     val currentUser: FirebaseUser?
         get() = authService.currentUser
 
-//    init {
-//        if (authService.currentUser != null) {
-//            _loginFlow.value = Response.Success(authService.currentUser!!)
-//        }
-//    }
+    init {
+        if (authService.currentUser != null) {
+            _loginFlow.value = Response.Success(authService.currentUser!!)
+        }
+    }
 
     fun loginUser() = viewModelScope.launch {
 
