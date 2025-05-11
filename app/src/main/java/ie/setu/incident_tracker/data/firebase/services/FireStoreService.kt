@@ -18,4 +18,5 @@ interface FireStoreService {
     suspend fun deleteDeviceFromIncident(incidentId: String, deviceId: String)
     suspend fun updateDeviceInIncident(incidentId: String, updatedDevice: DeviceFireStore)
     suspend fun updatePhotoUris(email: String, uri: Uri)
+    suspend fun getAllIncidents(): Incidents
 }

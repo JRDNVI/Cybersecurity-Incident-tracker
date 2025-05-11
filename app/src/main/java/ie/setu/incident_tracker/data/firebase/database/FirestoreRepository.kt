@@ -22,6 +22,11 @@ class FireStoreRepository(
     private val authRepository: AuthService
 ) : FireStoreService {
 
+    override suspend fun getAllIncidents(): Incidents {
+        return firestore.collection(INCIDENT_COLLECTION)
+            .dataObjects<IncidentFireStore>()
+    }
+
     override suspend fun getAll(email: String): Incidents {
         return firestore.collection(INCIDENT_COLLECTION)
             .whereEqualTo(USER_EMAIL, email)

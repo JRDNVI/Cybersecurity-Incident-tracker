@@ -7,14 +7,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ie.setu.incident_tracker.IncidentTrackerBottomBar
 import ie.setu.incident_tracker.IncidentTrackerTopAppBar
@@ -23,9 +22,8 @@ import ie.setu.incident_tracker.data.firebase.services.IncidentModel
 import ie.setu.incident_tracker.ui.AppViewModelProvider
 import ie.setu.incident_tracker.ui.navigation.NavigationDestination
 import ie.setu.incident_tracker.ui.components.SwipeableIncidentCard
-import androidx.compose.material3.Icon as M3Icon
+import kotlinx.coroutines.launch
 import androidx.compose.material3.TextField as M3TextField
-import androidx.compose.material3.DropdownMenu as M3DropdownMenu
 import androidx.compose.material3.Text as M3Text
 
 
@@ -47,7 +45,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
-    var expand by remember { mutableStateOf(false) }
     val currentUser = viewModel.currentUser
     val userName = if (viewModel.isAuthenticated()) currentUser?.displayName else ""
 
@@ -58,7 +55,13 @@ fun HomeScreen(
                 canNavigateBack = false,
                 onLogout = { navigateToSignInScreen() },
                 onToggleDarkMode = { onToggleDarkMode() },
-                onToggleListAll = {  }
+                onToggleListAll = { enabled ->
+                    if (enabled) {
+                        viewModel.viewModelScope.launch { viewModel.listAllIncidents() }
+                    } else {
+                        viewModel.loadUserIncidents()
+                    }
+                }
             )
 
         },

@@ -46,11 +46,11 @@ import ie.setu.incident_tracker.ui.navigation.IncidentTrackerNavHost
 @Composable
 fun IncidentTrackerApp(
     navController: NavHostController = rememberNavController(),
-    onToggleDarkMode: () -> Unit = {}
+    onToggleDarkMode: () -> Unit = {},
 ) {
     IncidentTrackerNavHost(
         navController = navController,
-        onToggleDarkMode = onToggleDarkMode
+        onToggleDarkMode = onToggleDarkMode,
     )
 }
 
@@ -63,9 +63,12 @@ fun IncidentTrackerTopAppBar(
     navigateUp: () -> Unit = {},
     onLogout: () -> Unit = {},
     onToggleDarkMode: () -> Unit = {},
-    onToggleListAll: () -> Unit = {}
+    onToggleListAll: (Boolean) -> Unit = {},
+
 ) {
     var expand by remember { mutableStateOf(false) }
+    var listAllEnabled by remember { mutableStateOf(false) }
+    var darkModeEnabled by remember { mutableStateOf(false) }
 
     CenterAlignedTopAppBar(
         title = { Text(title) },
@@ -84,9 +87,6 @@ fun IncidentTrackerTopAppBar(
             IconButton(onClick = { expand = true }) {
                 Icon(Icons.Default.Menu, contentDescription = "Menu", modifier = Modifier.size(24.dp))
             }
-
-            var darkModeEnabled by remember { mutableStateOf(false) }
-            var listAllEnabled by remember { mutableStateOf(false) }
 
             DropdownMenu(expanded = expand, onDismissRequest = { expand = false }) {
                 DropdownMenuItem(
@@ -122,7 +122,7 @@ fun IncidentTrackerTopAppBar(
                                 checked = listAllEnabled,
                                 onCheckedChange = {
                                     listAllEnabled = it
-                                    onToggleListAll()
+                                    onToggleListAll(it)
                                 },
                                 modifier = Modifier.scale(0.80f)
                             )
