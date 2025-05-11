@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -152,49 +153,54 @@ fun IncidentTrackerTopAppBar(
 
 @Composable
 fun IncidentTrackerBottomBar(
+    currentDestination: String,
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToMap: () -> Unit,
     additionalIcons: List<Pair<ImageVector, () -> Unit>> = emptyList()
 ) {
     BottomAppBar(
-        modifier = Modifier.height(64.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp),
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
     ) {
-        IconButton(onClick = navigateToHome) {
-            Icon(
-                imageVector = Icons.Default.Home,
-                contentDescription = "Navigate Home"
-            )
-        }
+        val selectedColor = MaterialTheme.colorScheme.primary
+        val defaultColor = MaterialTheme.colorScheme.onPrimaryContainer
 
-        Spacer(modifier = Modifier.weight(4f))
-        IconButton(onClick = navigateToProfile) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "Navigate to Profile",
-                modifier = Modifier.size(32.dp)
-            )
-        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-        Spacer(modifier = Modifier.weight(5f))
-        IconButton(onClick = navigateToMap) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = "Navigate to Map",
-                modifier = Modifier
-                    .size(32.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-        additionalIcons.forEach { (icon, action) ->
-            IconButton(onClick = action) {
+            IconButton(onClick = navigateToMap) {
                 Icon(
-                    imageVector = icon,
-                    contentDescription = "Additional Icon",
-                    modifier = Modifier.size(32.dp)
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Navigate to Map",
+                    tint = if (currentDestination == "Map") selectedColor else defaultColor,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            IconButton(onClick = navigateToHome) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "Navigate Home",
+                    tint = if (currentDestination == "Home") selectedColor else defaultColor,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            IconButton(onClick = navigateToProfile) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Navigate to Profile",
+                    tint = if (currentDestination == "profile") selectedColor else defaultColor,
+                    modifier = Modifier.size(28.dp)
                 )
             }
         }

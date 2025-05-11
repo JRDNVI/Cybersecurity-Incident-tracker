@@ -87,6 +87,7 @@ fun ProfileScreen (
     },
     bottomBar = {
         IncidentTrackerBottomBar(
+            currentDestination = "profile",
             navigateToHome = { navigateHome() },
             navigateToProfile = {  },
             navigateToMap = { navigateToMap() }

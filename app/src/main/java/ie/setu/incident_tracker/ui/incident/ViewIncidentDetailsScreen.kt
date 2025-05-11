@@ -95,6 +95,7 @@ fun ViewIncidentDetailsScreen(
 
         bottomBar = {
             IncidentTrackerBottomBar(
+                currentDestination = "",
                 navigateToHome = navigateToHome,
                 navigateToProfile = { navigateToProfile()},
                 navigateToMap = { navigateToMap() },

@@ -70,6 +70,7 @@ fun CveDetailsScreen(
         },
         bottomBar = {
             IncidentTrackerBottomBar(
+                currentDestination = "",
                 navigateToHome = { navigateToHome() },
                 navigateToProfile = { navigateToProfile() },
                 navigateToMap = { navigateToMap() }

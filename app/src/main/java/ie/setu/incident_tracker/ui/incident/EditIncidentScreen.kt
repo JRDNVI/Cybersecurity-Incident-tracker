@@ -48,6 +48,7 @@ fun EditIncidentScreen(
         },
         bottomBar = {
             IncidentTrackerBottomBar(
+                currentDestination = "",
                 navigateToHome = navigateBack,
                 navigateToProfile = { navigateToProfile() },
                 navigateToMap = { navigateToMap() }

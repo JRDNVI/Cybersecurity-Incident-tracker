@@ -65,6 +65,7 @@ fun AddDeviceScreen(
         },
         bottomBar = {
             IncidentTrackerBottomBar(
+                currentDestination = "",
                 navigateToHome = { navigateToHome() },
                 navigateToProfile = { navigateToProfile() },
                 navigateToMap = { navigateToMap() }
