@@ -47,6 +47,7 @@ fun AddDeviceScreen(
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
     onToggleDarkMode: () -> Unit,
+    navigateToMap: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddDeviceViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -65,7 +66,8 @@ fun AddDeviceScreen(
         bottomBar = {
             IncidentTrackerBottomBar(
                 navigateToHome = { navigateToHome() },
-                navigateToProfile = { navigateToProfile() }
+                navigateToProfile = { navigateToProfile() },
+                navigateToMap = { navigateToMap() }
             )
         }
     ) { innerPadding ->

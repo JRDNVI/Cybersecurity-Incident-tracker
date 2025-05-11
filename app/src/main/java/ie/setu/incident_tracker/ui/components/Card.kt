@@ -30,6 +30,7 @@ import androidx.compose.material.DismissDirection
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Icon as M3Icon
 import androidx.compose.material3.Button as M3Button
 import androidx.compose.material3.Text as M3Text
@@ -42,7 +43,7 @@ fun SwipeableIncidentCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val cardHeight = 100.dp
+    val cardHeight = 70.dp
     var showDeleteDialog by remember { mutableStateOf(false) }
 
 
@@ -146,33 +147,59 @@ fun IncidentCard(incident: IncidentModel, onClick: () -> Unit) {
     Card(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         shape = MaterialTheme.shapes.medium
     ) {
-        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(photoUri).crossfade(true).build(),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(photoUri)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.size(50.dp).clip(CircleShape)
                 )
-                M3Text(
-                    text = incident.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.weight(1f).padding(6.dp)
-                )
-                M3Text(
-                    text = incident.type,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+                ) {
+                    M3Text(
+                        text = incident.title,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    M3Text(
+                        text = incident.dateOfOccurrence.ifBlank { "No date" },
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
+                Column(horizontalAlignment = Alignment.End) {
+                    M3Text(
+                        text = incident.type,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    M3Text(
+                        text = if (!incident.status) "Status: Open" else "Status: Closed",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                }
             }
-            M3Text(
-                text = if (!incident.status) "Status: Open" else "Status: Closed",
-                style = MaterialTheme.typography.bodyMedium,
-            )
         }
     }
 }
+
 

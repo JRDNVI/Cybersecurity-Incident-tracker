@@ -7,6 +7,7 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.CredentialOption
 import androidx.credentials.CustomCredential
 import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.Firebase
@@ -25,6 +26,8 @@ import ie.setu.incident_tracker.data.firebase.services.FireStoreService
 import ie.setu.incident_tracker.data.firebase.storage.StorageRepository
 import ie.setu.incident_tracker.data.incident.IncidentRepository
 import ie.setu.incident_tracker.data.incident.OfflineIncidentRepository
+import ie.setu.incident_tracker.data.location.LocationRepository
+import ie.setu.incident_tracker.data.location.LocationService
 import ie.setu.incident_tracker.data.retrofit.CveRepository
 import ie.setu.incident_tracker.data.retrofit.CveService
 import ie.setu.incident_tracker.data.retrofit.ServiceEndpoints
@@ -43,6 +46,7 @@ interface AppContainer {
     val fireStoreRepository: FireStoreService
     val storageRepository: StorageRepository
     val cveRepository : CveRepository
+    val locationRepository: LocationRepository
 
 }
 
@@ -114,4 +118,11 @@ class AppDataContainer(private val context: Context) : AppContainer {
         CveRepository(cveService)
     }
 
+    private val locationClient: FusedLocationProviderClient by lazy {
+        com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(context)
+    }
+
+    override val locationRepository: LocationRepository by lazy {
+        LocationRepository(locationClient)
+    }
 }

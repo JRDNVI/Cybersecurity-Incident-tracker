@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Divider
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
@@ -152,6 +154,7 @@ fun IncidentTrackerTopAppBar(
 fun IncidentTrackerBottomBar(
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
+    navigateToMap: () -> Unit,
     additionalIcons: List<Pair<ImageVector, () -> Unit>> = emptyList()
 ) {
     BottomAppBar(
@@ -166,7 +169,7 @@ fun IncidentTrackerBottomBar(
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(4f))
         IconButton(onClick = navigateToProfile) {
             Icon(
                 imageVector = Icons.Default.Person,
@@ -175,8 +178,17 @@ fun IncidentTrackerBottomBar(
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(5f))
+        IconButton(onClick = navigateToMap) {
+            Icon(
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = "Navigate to Map",
+                modifier = Modifier
+                    .size(32.dp)
+            )
+        }
 
+        Spacer(modifier = Modifier.weight(1f))
         additionalIcons.forEach { (icon, action) ->
             IconButton(onClick = action) {
                 Icon(

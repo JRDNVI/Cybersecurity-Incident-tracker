@@ -41,6 +41,7 @@ fun CveDetailsScreen(
     navigateToProfile: () -> Unit,
     navigateBack: () -> Unit,
     onToggleDarkMode: () -> Unit,
+    navigateToMap: () -> Unit,
     viewModel: CveDetailsViewModel = viewModel(factory = AppViewModelProvider.factory),
 ) {
     var cveResponse by remember { mutableStateOf<CveResponse?>(null) }
@@ -70,7 +71,8 @@ fun CveDetailsScreen(
         bottomBar = {
             IncidentTrackerBottomBar(
                 navigateToHome = { navigateToHome() },
-                navigateToProfile = { navigateToProfile() }
+                navigateToProfile = { navigateToProfile() },
+                navigateToMap = { navigateToMap() }
             )
         }
     ) { innerPadding ->
@@ -90,13 +92,13 @@ fun CveDetailsScreen(
                     }
                 }
                 errorMessage != null -> {
-                    Text(text = errorMessage ?: "Unknown error", modifier = modifier.padding(16.dp))
+                    Text(text = errorMessage ?: "error")
                 }
                 cveResponse != null -> {
                     CveDetailCard(cveResponse = cveResponse!!, modifier = modifier.padding(16.dp))
                 }
                 else -> {
-                    Text("No CVE data found.", modifier = modifier.padding(16.dp))
+                    Text("No CVE data found.")
                 }
             }
         }

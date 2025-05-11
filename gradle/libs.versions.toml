@@ -25,6 +25,10 @@ lifecycleCompiler = "2.8.7"
 firebaseFirestore = "25.1.4"
 googleid = "1.1.1"
 firebaseStorage = "21.0.1"
+mapsCompose = "4.1.1"
+playServicesLocation = "21.2.0"
+playServicesMaps = "18.2.0"
+accompanistPermissions = "0.24.13-rc"
 
 
 [libraries]
@@ -56,6 +60,10 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

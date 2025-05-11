@@ -66,8 +66,10 @@ class EditIncidentViewModel(
             val updatedLocal = incidentUiState.incidentDetails.toItem().copy(email = userEmail)
             incidentRepository.updateItem(updatedLocal)
 
+            val existing = fireStoreRepository.get(userEmail, incidentID)
             val firestoreIncident = updatedLocal.toFireStoreModel().copy(
-                _id = fireStoreDocumentId ?: ""
+                _id = fireStoreDocumentId ?: "",
+                devices = existing?.devices ?: emptyList()
             )
             fireStoreRepository.update(userEmail, firestoreIncident)
             return true

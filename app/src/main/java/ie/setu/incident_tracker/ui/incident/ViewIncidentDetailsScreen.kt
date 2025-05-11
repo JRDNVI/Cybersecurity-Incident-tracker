@@ -68,6 +68,7 @@ fun ViewIncidentDetailsScreen(
     navigateToAddDevice: (String) -> Unit,
     navigateToEditDevice: (String, String) -> Unit,
     navigateToProfile: () -> Unit,
+    navigateToMap: () -> Unit,
     navigateToCveDetail: (String) -> Unit,
     onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
@@ -96,9 +97,7 @@ fun ViewIncidentDetailsScreen(
             IncidentTrackerBottomBar(
                 navigateToHome = navigateToHome,
                 navigateToProfile = { navigateToProfile()},
-                additionalIcons = listOf(
-                    Icons.Default.Add to { navigateToAddDevice(viewIncidentUiState.value.incidentID) }
-                )
+                navigateToMap = { navigateToMap() },
             )
         }
     ) { innerPadding ->

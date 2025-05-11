@@ -42,6 +42,7 @@ fun HomeScreen(
     navigateToEditIncident: (String) -> Unit,
     navigateToSignInScreen: () -> Unit,
     navigateToProfile: () -> Unit,
+    navigateToMap: () -> Unit,
     onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.factory)
@@ -72,7 +73,7 @@ fun HomeScreen(
             IncidentTrackerBottomBar(
                 navigateToHome = {},
                 navigateToProfile = { navigateToProfile() },
-                additionalIcons = listOf(Icons.Default.Add to { navigateToAddIncident() })
+                navigateToMap = { navigateToMap() },
             )
         }
     ) { innerPadding ->

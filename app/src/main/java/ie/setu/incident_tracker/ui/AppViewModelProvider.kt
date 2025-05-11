@@ -19,6 +19,7 @@ import ie.setu.incident_tracker.ui.auth.login.LoginViewModel
 import ie.setu.incident_tracker.ui.auth.register.RegisterViewModel
 import ie.setu.incident_tracker.ui.cve.CveDetailsScreen
 import ie.setu.incident_tracker.ui.cve.CveDetailsViewModel
+import ie.setu.incident_tracker.ui.map.MapViewModel
 import ie.setu.incident_tracker.ui.profile.ProfileViewModel
 
 object AppViewModelProvider {
@@ -108,6 +109,13 @@ object AppViewModelProvider {
             CveDetailsViewModel(
                 this.createSavedStateHandle(),
                 application.container.cveRepository
+            )
+        }
+        initializer {
+            val application = this.IncidentTrackerApplication()
+            MapViewModel(
+                application.container.locationRepository,
+                application.container.fireStoreRepository
             )
         }
     }

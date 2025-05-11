@@ -31,6 +31,7 @@ fun EditIncidentScreen(
     onNavigateUp: () -> Unit,
     navigateToProfile: () -> Unit,
     onToggleDarkMode: () -> Unit,
+    navigateToMap: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditIncidentViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
@@ -49,6 +50,7 @@ fun EditIncidentScreen(
             IncidentTrackerBottomBar(
                 navigateToHome = navigateBack,
                 navigateToProfile = { navigateToProfile() },
+                navigateToMap = { navigateToMap() }
             )
         }
     ) { innerPadding ->

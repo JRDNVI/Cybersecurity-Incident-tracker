@@ -54,7 +54,7 @@ class FireStoreRepository(
 
 
     override suspend fun update(email: String, incident: IncidentModel) {
-        val updatedIncident = incident.copy()
+        val updatedIncident = incident.copy(devices = incident.devices)
         firestore.collection(INCIDENT_COLLECTION)
             .document(incident._id)
             .set(updatedIncident)
